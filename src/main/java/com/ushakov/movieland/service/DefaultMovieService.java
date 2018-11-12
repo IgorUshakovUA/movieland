@@ -28,4 +28,13 @@ public class DefaultMovieService implements MovieService {
 
         return movieList;
     }
+
+    @Override
+    public List<Movie> getThreeRandomMovies() {
+        List<Movie> movieList = movieDao.getThreeRandomMovies();
+
+        logger.trace("movieList {}", movieList);
+
+        return movieList;
+    }
 }

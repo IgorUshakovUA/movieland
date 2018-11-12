@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public class JdbcMovieDao implements MovieDao {
     private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id";
+    private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -27,6 +28,15 @@ public class JdbcMovieDao implements MovieDao {
     @Override
     public List<Movie> getAll() {
         List<Movie> movieList = jdbcTemplate.query(GET_ALL_SQL, MOVIE_ROW_MAPPER);
+
+        logger.trace("movieList {}", movieList);
+
+        return movieList;
+    }
+
+    @Override
+    public List<Movie> getThreeRandomMovies() {
+        List<Movie> movieList = jdbcTemplate.query(GET_THREE_MOVIES_BY_IDS, MOVIE_ROW_MAPPER);
 
         logger.trace("movieList {}", movieList);
 

@@ -1,5 +1,6 @@
 package com.ushakov.movieland.controller;
 
+
 import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.service.MovieService;
 import org.junit.Before;
@@ -14,12 +15,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -27,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml", "classpath:testContext.xml"})
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml"})
 @WebAppConfiguration
 public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     private MockMvc mockMvc;
@@ -35,11 +39,15 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    private MovieService movieService;
+    private MovieService movieService = mock(MovieService.class);
 
     @Before
     public void setUp() {
+        MovieController movieController = (MovieController) webApplicationContext.getBean("movieController");
+        Field field = ReflectionUtils.findField(MovieController.class, "movieService");
+        field.setAccessible(true);
+        ReflectionUtils.setField(field, movieController, movieService);
+
         Mockito.reset(movieService);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -90,6 +98,70 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[1].picturePath", equalTo("path2")));
 
         verify(movieService, times(1)).getAll();
+        verifyNoMoreInteractions(movieService);
+    }
+
+    @Test
+    public void testGetThreeRandomMovies() throws Exception {
+        // Prepare
+        Movie first = new Movie();
+        first.setId(1);
+        first.setNameRussian("Побег из Шоушенка");
+        first.setNameNative("The Shawshank Redemption");
+        first.setYearOfRelease(1994);
+        first.setRating(8.9);
+        first.setPrice(123.45);
+        first.setPicturePath("path1");
+
+        Movie second = new Movie();
+        second.setId(2);
+        second.setNameRussian("Зеленая миля");
+        second.setNameNative("The Green Mile");
+        second.setYearOfRelease(1999);
+        second.setRating(8.9);
+        second.setPrice(134.67);
+        second.setPicturePath("path2");
+
+        Movie third = new Movie();
+        third.setId(3);
+        third.setNameRussian("Форрест Гамп");
+        third.setNameNative("Forrest Gump");
+        third.setYearOfRelease(1994);
+        third.setRating(8.6);
+        third.setPrice(200.6);
+        third.setPicturePath("path3");
+
+        // When
+        when(movieService.getThreeRandomMovies()).thenReturn(Arrays.asList(first, second, third));
+
+        // Then
+        mockMvc.perform(get("/v1/movie/random"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[0].id", notNullValue()))
+                .andExpect(jsonPath("$[0].nameRussian", notNullValue()))
+                .andExpect(jsonPath("$[0].nameNative", notNullValue()))
+                .andExpect(jsonPath("$[0].yearOfRelease", notNullValue()))
+                .andExpect(jsonPath("$[0].rating", notNullValue()))
+                .andExpect(jsonPath("$[0].price", notNullValue()))
+                .andExpect(jsonPath("$[0].picturePath", notNullValue()))
+                .andExpect(jsonPath("$[1].id", notNullValue()))
+                .andExpect(jsonPath("$[1].nameRussian", notNullValue()))
+                .andExpect(jsonPath("$[1].nameNative", notNullValue()))
+                .andExpect(jsonPath("$[1].yearOfRelease", notNullValue()))
+                .andExpect(jsonPath("$[1].rating", notNullValue()))
+                .andExpect(jsonPath("$[1].price", notNullValue()))
+                .andExpect(jsonPath("$[1].picturePath", notNullValue()))
+                .andExpect(jsonPath("$[2].id", notNullValue()))
+                .andExpect(jsonPath("$[2].nameRussian", notNullValue()))
+                .andExpect(jsonPath("$[2].nameNative", notNullValue()))
+                .andExpect(jsonPath("$[2].yearOfRelease", notNullValue()))
+                .andExpect(jsonPath("$[2].rating", notNullValue()))
+                .andExpect(jsonPath("$[2].price", notNullValue()))
+                .andExpect(jsonPath("$[2].picturePath", notNullValue()));
+
+        verify(movieService, times(1)).getThreeRandomMovies();
         verifyNoMoreInteractions(movieService);
     }
 }

@@ -22,9 +22,16 @@ public class MovieController {
 
     @RequestMapping(path = "/v1/movie", method = RequestMethod.GET)
     public List<Movie> getAll() {
-        logger.debug("getAll was started.");
-
         List<Movie> movieList = movieService.getAll();
+
+        logger.trace("movieList {}", movieList);
+
+        return movieList;
+    }
+
+    @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET)
+    public List<Movie> getThreeRandomMovies() {
+        List<Movie> movieList = movieService.getThreeRandomMovies();
 
         logger.trace("movieList {}", movieList);
 
