@@ -15,18 +15,14 @@
         <context:exclude-filter type="regex" expression="com\.ushakov\.movieland\.controller"/>
     </context:component-scan>
 
-    <mvc:annotation-driven/>
-
     <bean class="java.net.URI" id="dbUrl">
-        <constructor-arg
-                value="#{systemEnvironment['DATABASE_URL']==null?'postrges://app_owner:app_owner@127.0.0.1:5432/movieland':systemEnvironment['DATABASE_URL']}"/>
+        <constructor-arg value="#{systemEnvironment['DATABASE_URL']==null?'postgresql://app_owner:app_owner@127.0.0.1:5432/movieland':systemEnvironment['DATABASE_URL']}"/>
     </bean>
 
-    <bean id="dataSource" class="org.postgresql.ds.PGSimpleDataSource">
-        <property name="serverName" value="#{@dbUrl.getHost()}"/>
-        <property name="databaseName" value="#{@dbUrl.getPath().substring(1)}"/>
-        <property name="portNumber" value="#{@dbUrl.getPort()}"/>
-        <property name="user" value="#{@dbUrl.getUserInfo().split(':')[0]}"/>
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="#{'jdbc:postgresql://' + @dbUrl.getHost() + ':' + @dbUrl.getPort() + '/' + @dbUrl.getPath().substring(1)}"/>
+        <property name="username" value="#{@dbUrl.getUserInfo().split(':')[0]}"/>
         <property name="password" value="#{@dbUrl.getUserInfo().split(':')[1]}"/>
     </bean>
 

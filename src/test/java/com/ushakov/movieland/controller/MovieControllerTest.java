@@ -2,12 +2,12 @@ package com.ushakov.movieland.controller;
 
 import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.service.MovieService;
-import com.ushakov.movieland.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,9 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml","file:src/test/testContext.xml"})
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml", "file:src/test/testContext.xml"})
 @WebAppConfiguration
-public class MovieRestControllerTest extends AbstractJUnit4SpringContextTests {
+public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     private MockMvc mockMvc;
 
     @Autowired
@@ -47,6 +47,7 @@ public class MovieRestControllerTest extends AbstractJUnit4SpringContextTests {
 
     @Test
     public void testGetAll() throws Exception {
+        // Prepare
         Movie first = new Movie();
         first.setId(1);
         first.setNameRussian("Побег из Шоушенка");
@@ -65,11 +66,13 @@ public class MovieRestControllerTest extends AbstractJUnit4SpringContextTests {
         second.setPrice(134.67);
         second.setPicturePath("path2");
 
+        // When
         when(movieService.getAll()).thenReturn(Arrays.asList(first, second));
 
+        // Then
         mockMvc.perform(get("/v1/movie"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", equalTo(1)))
                 .andExpect(jsonPath("$[0].nameRussian", equalTo("Побег из Шоушенка")))

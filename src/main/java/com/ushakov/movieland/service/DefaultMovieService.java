@@ -16,19 +16,15 @@ public class DefaultMovieService implements MovieService {
     private MovieDao movieDao;
 
     public DefaultMovieService(MovieDao movieDao) {
-        logger.info("DefaultMovieService was created.");
-
         this.movieDao = movieDao;
     }
 
     @Override
     public List<Movie> getAll() {
-        logger.info("DeafaultMovieService.getAll was started.");
-
         List<Movie> movieList = movieDao.getAll();
         Collections.sort(movieList, Comparator.comparingInt(Movie::getId));
 
-        logger.trace(movieList.toString());
+        logger.trace("movieList {}", movieList);
 
         return movieList;
     }

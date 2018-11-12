@@ -1,6 +1,7 @@
 package com.ushakov.movieland.dao.jdbc;
 
 import com.ushakov.movieland.dao.MovieDao;
+import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.ushakov.movieland.entity.Movie;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -18,48 +20,77 @@ public class JdbcMovieDaoTest {
     public void testGetAll() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
 
-        List<Movie> expectedMovieList = new ArrayList();
+        List<Movie> expectedMovieList = new ArrayList<>();
 
-        Movie movie = new Movie();
-        movie.setId(1);
-        movie.setNameRussian("Побег из Шоушенка");
-        movie.setNameNative("The Shawshank Redemption");
-        movie.setYearOfRelease(1994);
-        movie.setRating(8.9);
-        movie.setPrice(123.45);
-        movie.setPicturePath("path1");
-        expectedMovieList.add(movie);
+        Movie movie1 = new Movie();
+        movie1.setId(1);
+        movie1.setNameRussian("Побег из Шоушенка");
+        movie1.setNameNative("The Shawshank Redemption");
+        movie1.setYearOfRelease(1994);
+        movie1.setRating(8.9);
+        movie1.setPrice(123.45);
+        movie1.setPicturePath("path1");
+        expectedMovieList.add(movie1);
 
-        movie = new Movie();
-        movie.setId(2);
-        movie.setNameRussian("Зеленая миля");
-        movie.setNameNative("The Green Mile");
-        movie.setYearOfRelease(1999);
-        movie.setRating(8.9);
-        movie.setPrice(134.67);
-        movie.setPicturePath("path2");
-        expectedMovieList.add(movie);
+        Movie movie2 = new Movie();
+        movie2.setId(2);
+        movie2.setNameRussian("Зеленая миля");
+        movie2.setNameNative("The Green Mile");
+        movie2.setYearOfRelease(1999);
+        movie2.setRating(8.9);
+        movie2.setPrice(134.67);
+        movie2.setPicturePath("path2");
+        expectedMovieList.add(movie2);
 
-        movie = new Movie();
-        movie.setId(3);
-        movie.setNameRussian("Форрест Гамп");
-        movie.setNameNative("Forrest Gump");
-        movie.setYearOfRelease(1994);
-        movie.setRating(8.6);
-        movie.setPrice(200.60);
-        movie.setPicturePath("path3");
-        expectedMovieList.add(movie);
-
-        when(jdbcTemplate.query(JdbcMovieDao.GET_ALL_SQL, JdbcMovieDao.MOVIE_ROW_MAPPER)).thenReturn(expectedMovieList);
+        Movie movie3 = new Movie();
+        movie3.setId(3);
+        movie3.setNameRussian("Форрест Гамп");
+        movie3.setNameNative("Forrest Gump");
+        movie3.setYearOfRelease(1994);
+        movie3.setRating(8.6);
+        movie3.setPrice(200.60);
+        movie3.setPicturePath("path3");
+        expectedMovieList.add(movie3);
 
         MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
 
+        // When
+        when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class))).thenReturn(expectedMovieList);
+
+        // Then
         List<Movie> actualMovieList = movieDao.getAll();
 
         assertEquals(3, actualMovieList.size());
-        assertEquals(expectedMovieList.get(0).toString(), actualMovieList.get(0).toString());
-        assertEquals(expectedMovieList.get(1).toString(), actualMovieList.get(1).toString());
-        assertEquals(expectedMovieList.get(2).toString(), actualMovieList.get(2).toString());
+
+        Movie actual1 = actualMovieList.get(0);
+        Movie expected1 = expectedMovieList.get(0);
+        assertEquals(expected1.getId(),actual1.getId());
+        assertEquals(expected1.getNameRussian(),actual1.getNameRussian());
+        assertEquals(expected1.getNameNative(),actual1.getNameNative());
+        assertEquals(expected1.getYearOfRelease(),actual1.getYearOfRelease());
+        assertEquals(expected1.getRating(),actual1.getRating(),1e-3);
+        assertEquals(expected1.getPrice(),actual1.getPrice(),1e-3);
+        assertEquals(expected1.getPicturePath(),actual1.getPicturePath());
+
+        Movie actual2 = actualMovieList.get(1);
+        Movie expected2 = expectedMovieList.get(1);
+        assertEquals(expected2.getId(),actual2.getId());
+        assertEquals(expected2.getNameRussian(),actual2.getNameRussian());
+        assertEquals(expected2.getNameNative(),actual2.getNameNative());
+        assertEquals(expected2.getYearOfRelease(),actual2.getYearOfRelease());
+        assertEquals(expected2.getRating(),actual2.getRating(),1e-3);
+        assertEquals(expected2.getPrice(),actual2.getPrice(),1e-3);
+        assertEquals(expected2.getPicturePath(),actual2.getPicturePath());
+
+        Movie actual3 = actualMovieList.get(2);
+        Movie expected3 = expectedMovieList.get(2);
+        assertEquals(expected3.getId(),actual3.getId());
+        assertEquals(expected3.getNameRussian(),actual3.getNameRussian());
+        assertEquals(expected3.getNameNative(),actual3.getNameNative());
+        assertEquals(expected3.getYearOfRelease(),actual3.getYearOfRelease());
+        assertEquals(expected3.getRating(),actual3.getRating(),1e-3);
+        assertEquals(expected3.getPrice(),actual3.getPrice(),1e-3);
+        assertEquals(expected3.getPicturePath(),actual3.getPicturePath());
     }
 
 }

@@ -4,7 +4,6 @@ import com.ushakov.movieland.entity.Movie;
 import org.junit.Test;
 
 import java.sql.ResultSet;
-import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -14,8 +13,10 @@ public class MovieRowMapperTest {
 
     @Test
     public void testRowMap() throws Exception {
+        // Prepare
         ResultSet resultSet = mock(ResultSet.class);
 
+        // When
         when(resultSet.getInt("id")).thenReturn(1);
         when(resultSet.getString("nameRussian")).thenReturn("Побег из Шоушенка");
         when(resultSet.getString("nameNative")).thenReturn("The Shawshank Redemption");
@@ -24,6 +25,7 @@ public class MovieRowMapperTest {
         when(resultSet.getDouble("price")).thenReturn(123.45);
         when(resultSet.getString("picturePath")).thenReturn("path1");
 
+        // Then
         MovieRowMapper mapper = new MovieRowMapper();
         Movie movie = mapper.mapRow(resultSet, 0);
 

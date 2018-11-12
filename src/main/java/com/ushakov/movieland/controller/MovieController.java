@@ -11,24 +11,22 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class MovieRestController {
+public class MovieController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private MovieService movieService;
 
-    public MovieRestController(MovieService movieService) {
-        logger.info("MovieRestConroller was created.");
-
+    public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
 
-    @RequestMapping(path="/v1/movie", method = RequestMethod.GET)
+    @RequestMapping(path = "/v1/movie", method = RequestMethod.GET)
     public List<Movie> getAll() {
-        logger.info("MovieRestController.getAll was started.");
+        logger.debug("getAll was started.");
 
         List<Movie> movieList = movieService.getAll();
 
-        logger.trace(movieList.toString());
+        logger.trace("movieList {}", movieList);
 
         return movieList;
     }
