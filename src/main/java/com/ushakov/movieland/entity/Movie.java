@@ -77,4 +77,22 @@ public class Movie {
                 ", picturePath='" + picturePath + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null) {
+            return false;
+        }
+
+        Movie movie = (Movie) object;
+
+        if (movie == this) {
+            return true;
+        }
+
+        return this.id == movie.id && this.nameNative != null && this.nameNative.equals(movie.nameNative) &&
+                this.nameRussian != null && this.nameRussian.equals(movie.nameRussian) &&
+                this.yearOfRelease == movie.yearOfRelease && (this.rating - movie.rating) < 1e-3 &&
+                (this.price - movie.price) < 1e-3 && this.picturePath != null && this.picturePath.equals(movie.picturePath);
+    }
 }

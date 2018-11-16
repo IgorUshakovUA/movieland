@@ -29,7 +29,7 @@ public class JdbcMovieDao implements MovieDao {
     public List<Movie> getAll() {
         List<Movie> movieList = jdbcTemplate.query(GET_ALL_SQL, MOVIE_ROW_MAPPER);
 
-        logger.trace("movieList {}", movieList);
+        logger.trace("All movies: {}", movieList);
 
         return movieList;
     }
@@ -38,7 +38,7 @@ public class JdbcMovieDao implements MovieDao {
     public List<Movie> getThreeRandomMovies() {
         List<Movie> movieList = jdbcTemplate.query(GET_THREE_MOVIES_BY_IDS, MOVIE_ROW_MAPPER);
 
-        logger.trace("movieList {}", movieList);
+        logger.trace("Three random movies: {}", movieList);
 
         return movieList;
     }

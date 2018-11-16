@@ -1,4 +1,4 @@
-package com.ushakov.movieland.controller;
+package com.ushakov.movieland.web.controller;
 
 
 import com.ushakov.movieland.entity.Movie;
@@ -15,10 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:applicationContext.xml", "classpath:dispatcherServlet-servlet.xml"})
+@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml"})
 @WebAppConfiguration
 public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     private MockMvc mockMvc;
@@ -39,14 +37,14 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private MovieController movieController;
+
     private MovieService movieService = mock(MovieService.class);
 
     @Before
     public void setUp() {
-        MovieController movieController = (MovieController) webApplicationContext.getBean("movieController");
-        Field field = ReflectionUtils.findField(MovieController.class, "movieService");
-        field.setAccessible(true);
-        ReflectionUtils.setField(field, movieController, movieService);
+        movieController.setMovieService(movieService);
 
         Mockito.reset(movieService);
 
