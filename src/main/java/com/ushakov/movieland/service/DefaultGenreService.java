@@ -3,6 +3,7 @@ package com.ushakov.movieland.service;
 import com.ushakov.movieland.dao.GenreDao;
 import com.ushakov.movieland.entity.Genre;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class DefaultGenreService implements GenreService {
     }
 
     @Override
+    @Cacheable("genres")
     public List<Genre> getAll() {
         return genreDao.getAll();
     }
