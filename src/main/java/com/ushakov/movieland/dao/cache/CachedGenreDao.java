@@ -1,34 +1,35 @@
-package com.ushakov.movieland.service;
+package com.ushakov.movieland.dao.cache;
 
+import com.ushakov.movieland.dao.GenreDao;
 import com.ushakov.movieland.entity.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
-public class CachedGenreService implements GenreService {
+@Repository
+public class CachedGenreDao implements GenreDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private GenreService genreService;
+    private GenreDao genreDao;
     private volatile boolean allInCache;
     private Map<Integer, Genre> cache = new ConcurrentHashMap<>();
 
     @Autowired
-    public CachedGenreService(GenreService genreService) {
-        this.genreService = genreService;
+    public CachedGenreDao(GenreDao genreDao) {
+        this.genreDao = genreDao;
     }
 
     @Override
     public List<Genre> getAll() {
         List<Genre> genreList;
         if (!allInCache) {
-            genreList = genreService.getAll();
+            genreList = genreDao.getAll();
             synchronized (cache) {
                 for (Genre genre : genreList) {
                     cache.put(genre.getId(), genre);
@@ -57,7 +58,7 @@ public class CachedGenreService implements GenreService {
 
             return result;
         } else {
-            result = genreService.getGenreById(id);
+            result = genreDao.getGenreById(id);
             cache.put(id, result);
 
             logger.debug("Genre from db: {}", result);

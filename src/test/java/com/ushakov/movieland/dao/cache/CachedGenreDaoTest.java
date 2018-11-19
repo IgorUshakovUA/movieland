@@ -1,26 +1,30 @@
-package com.ushakov.movieland.service;
+package com.ushakov.movieland.dao.cache;
 
-import com.ushakov.movieland.dao.GenreDao;
+import com.ushakov.movieland.dao.jdbc.JdbcGenreDao;
+import com.ushakov.movieland.dao.jdbc.mapper.GenreRowMapper;
 import com.ushakov.movieland.entity.Genre;
 import org.junit.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CachedGenreServiceTest {
+public class CachedGenreDaoTest {
 
     @Test
     public void testGetAll() {
-        // Preparation
-        GenreDao genreDao = mock(GenreDao.class);
+        // Preparations
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
 
-        GenreService innerGenreService = new DefaultGenreService(genreDao);
+        JdbcGenreDao innerGenreDao = new JdbcGenreDao(jdbcTemplate);
 
-        GenreService genreService = new CachedGenreService(innerGenreService);
+        CachedGenreDao genreDao = new CachedGenreDao(innerGenreDao);
 
         List<Genre> expectedGenreList = new ArrayList<>();
 
@@ -39,15 +43,14 @@ public class CachedGenreServiceTest {
         genre3.setName("фэнтези");
         expectedGenreList.add(genre3);
 
-
         // When
-        when(genreDao.getAll()).thenReturn(expectedGenreList);
+        when(jdbcTemplate.query(any(String.class), any(GenreRowMapper.class))).thenReturn(expectedGenreList);
 
         // Then
         for (int i = 0; i < 4; i++) {
-            List<Genre> actualGenreList = genreService.getAll();
+            List<Genre> actualGenreList = genreDao.getAll();
 
-            assertEquals(expectedGenreList.size(),actualGenreList.size());
+            assertEquals(expectedGenreList.size(), actualGenreList.size());
 
             for (Genre expectedGenre : expectedGenreList) {
                 assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
@@ -57,12 +60,12 @@ public class CachedGenreServiceTest {
 
     @Test
     public void testGetGenreById() {
-        // Preparation
-        GenreDao genreDao = mock(GenreDao.class);
+        // Preparations
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
 
-        GenreService innerGenreService = new DefaultGenreService(genreDao);
+        JdbcGenreDao innerGenreDao = new JdbcGenreDao(jdbcTemplate);
 
-        GenreService genreService = new CachedGenreService(innerGenreService);
+        CachedGenreDao genreDao = new CachedGenreDao(innerGenreDao);
 
         Genre expectedGenre = new Genre();
         expectedGenre.setId(1);
@@ -70,13 +73,13 @@ public class CachedGenreServiceTest {
 
 
         // When
-        when(genreDao.getGenreById(1)).thenReturn(expectedGenre);
+        when(jdbcTemplate.queryForObject(any(String.class), any(GenreRowMapper.class), eq(1))).thenReturn(expectedGenre);
 
         // Then
         for (int i = 0; i < 4; i++) {
-            Genre actualGenre = genreService.getGenreById(1);
+            Genre actualGenre = genreDao.getGenreById(1);
 
-            assertEquals(expectedGenre,actualGenre);
+            assertEquals(expectedGenre, actualGenre);
         }
     }
 
