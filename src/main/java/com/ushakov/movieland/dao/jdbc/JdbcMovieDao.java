@@ -5,6 +5,7 @@ import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.ushakov.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +21,7 @@ public class JdbcMovieDao implements MovieDao {
 
     private JdbcTemplate jdbcTemplate;
 
-
+    @Autowired
     public JdbcMovieDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

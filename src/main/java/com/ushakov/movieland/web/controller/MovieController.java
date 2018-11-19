@@ -2,6 +2,7 @@ package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.service.MovieService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import java.util.List;
 public class MovieController {
     private MovieService movieService;
 
+    @Autowired
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
