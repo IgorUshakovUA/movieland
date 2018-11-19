@@ -14,18 +14,20 @@
         <context:exclude-filter type="regex" expression="com\.ushakov\.movieland\.web\.*"/>
     </context:component-scan>
 
+    <cache:annotation-driven />
+
+    <bean id="cacheManager" class="com.ushakov.movieland.cache.DefaultCacheManager">
+        <property name="caches">
+            <set>
+                <bean id="cache" class="com.ushakov.movieland.cache.DefaultCache">
+                    <constructor-arg value="genres"/>
+                    <property name="liveTimeSeconds" value="14400"/>
+                </bean>
+            </set>
+        </property>
+    </bean>
+
     <beans profile="local">
-        <cache:annotation-driven />
-
-        <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-            <property name="configLocation" value="classpath:config/ehcache.xml"/>
-            <property name="shared" value="true"/>
-        </bean>
-
-        <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-            <property name="cacheManager" ref="ehcache"/>
-        </bean>
-
         <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
             <property name="driverClassName" value="org.postgresql.Driver"/>
             <property name="url" value="jdbc:postgresql://127.0.0.1:5432/movieland"/>
@@ -39,17 +41,6 @@
     </beans>
 
     <beans profile="heroku">
-        <cache:annotation-driven />
-
-        <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-            <property name="configLocation" value="classpath:config/ehcache.xml"/>
-            <property name="shared" value="true"/>
-        </bean>
-
-        <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-            <property name="cacheManager" ref="ehcache"/>
-        </bean>
-
         <bean class="java.net.URI" id="dbUrl">
             <constructor-arg value="#{systemEnvironment['DATABASE_URL']}"/>
         </bean>
