@@ -22,7 +22,6 @@ public class JdbcMovieDao implements MovieDao {
 
     private JdbcTemplate jdbcTemplate;
 
-
     @Autowired
     public JdbcMovieDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
