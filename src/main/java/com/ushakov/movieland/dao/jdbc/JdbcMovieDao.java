@@ -1,6 +1,8 @@
 package com.ushakov.movieland.dao.jdbc;
 
 import com.ushakov.movieland.dao.MovieDao;
+import com.ushakov.movieland.dao.SortField;
+import com.ushakov.movieland.dao.SortType;
 import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.ushakov.movieland.entity.Movie;
 import org.slf4j.Logger;
@@ -37,6 +39,21 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
+    public List<Movie> getAllSorted(SortField sortField, SortType sortType) {
+        StringBuilder query = new StringBuilder(GET_ALL_SQL);
+        query.append(" ORDER BY ");
+        query.append(sortField.value());
+        query.append(" ");
+        query.append(sortType.value());
+
+        List<Movie> movieList = jdbcTemplate.query(query.toString(), MOVIE_ROW_MAPPER);
+
+        logger.trace("All movies sorted by {} ordered {}: {}", sortField, sortType, movieList);
+
+        return movieList;
+    }
+
+    @Override
     public List<Movie> getThreeRandomMovies() {
         List<Movie> movieList = jdbcTemplate.query(GET_THREE_MOVIES_BY_IDS, MOVIE_ROW_MAPPER);
 
@@ -50,6 +67,21 @@ public class JdbcMovieDao implements MovieDao {
         List<Movie> movieList = jdbcTemplate.query(GET_MOVIES_BY_GENRE_SQL, MOVIE_ROW_MAPPER, genreId);
 
         logger.trace("Movies by genreId = {}: {}", genreId, movieList);
+
+        return movieList;
+    }
+
+    @Override
+    public List<Movie> getMoviesByGenreSorted(int genreId, SortField sortField, SortType sortType) {
+        StringBuilder query = new StringBuilder(GET_MOVIES_BY_GENRE_SQL);
+        query.append(" ORDER BY ");
+        query.append(sortField.value());
+        query.append(" ");
+        query.append(sortType.value());
+
+        List<Movie> movieList = jdbcTemplate.query(query.toString(), MOVIE_ROW_MAPPER, genreId);
+
+        logger.trace("Movies by genreId = {} sorted by {} ordered {}: {}", genreId, sortField, sortType, movieList);
 
         return movieList;
     }
