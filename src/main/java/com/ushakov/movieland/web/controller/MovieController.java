@@ -2,6 +2,7 @@ package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.service.MovieService;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,6 +27,11 @@ public class MovieController {
     @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET)
     public List<Movie> getThreeRandomMovies() {
         return movieService.getThreeRandomMovies();
+    }
+
+    @RequestMapping(path = "/v1/movie/genre/{genreId}", method = RequestMethod.GET)
+    public List<Movie> getMoviesByGenre(@PathVariable int genreId) {
+        return movieService.getMoviesByGenre(genreId);
     }
 
     public void setMovieService(MovieService movieService) {

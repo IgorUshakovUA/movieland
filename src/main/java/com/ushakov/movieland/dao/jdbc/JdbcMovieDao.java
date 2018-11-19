@@ -15,6 +15,7 @@ import java.util.List;
 public class JdbcMovieDao implements MovieDao {
     private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id";
     private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
+    private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -40,6 +41,15 @@ public class JdbcMovieDao implements MovieDao {
         List<Movie> movieList = jdbcTemplate.query(GET_THREE_MOVIES_BY_IDS, MOVIE_ROW_MAPPER);
 
         logger.trace("Three random movies: {}", movieList);
+
+        return movieList;
+    }
+
+    @Override
+    public List<Movie> getMoviesByGenre(int genreId) {
+        List<Movie> movieList = jdbcTemplate.query(GET_MOVIES_BY_GENRE_SQL, MOVIE_ROW_MAPPER, genreId);
+
+        logger.trace("Movies by genreId = {}: {}", genreId, movieList);
 
         return movieList;
     }
