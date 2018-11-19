@@ -18,8 +18,12 @@ public class DefaultGenreService implements GenreService {
     }
 
     @Override
-    @Cacheable("genres")
     public List<Genre> getAll() {
         return genreDao.getAll();
+    }
+
+    @Override
+    public Genre getGenreById(int id) {
+        return genreDao.getGenreById(id);
     }
 }

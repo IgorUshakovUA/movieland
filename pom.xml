@@ -48,13 +48,6 @@
             <version>2.9.7</version>
         </dependency>
 
-        <!-- *** Cache *** -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <!-- *** Logging *** -->
         <dependency>
             <groupId>ch.qos.logback</groupId>

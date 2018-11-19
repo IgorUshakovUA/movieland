@@ -11,14 +11,16 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DefaultGenreServiceTest {
+public class CachedGenreServiceTest {
 
     @Test
     public void testGetAll() {
         // Preparation
         GenreDao genreDao = mock(GenreDao.class);
 
-        GenreService genreService = new DefaultGenreService(genreDao);
+        GenreService innerGenreService = new DefaultGenreService(genreDao);
+
+        GenreService genreService = new CachedGenreService(innerGenreService);
 
         List<Genre> expectedGenreList = new ArrayList<>();
 
@@ -42,12 +44,14 @@ public class DefaultGenreServiceTest {
         when(genreDao.getAll()).thenReturn(expectedGenreList);
 
         // Then
-        List<Genre> actualGenreList = genreService.getAll();
+        for (int i = 0; i < 4; i++) {
+            List<Genre> actualGenreList = genreService.getAll();
 
-        assertEquals(expectedGenreList.size(),actualGenreList.size());
+            assertEquals(expectedGenreList.size(),actualGenreList.size());
 
-        for (Genre expectedGenre : expectedGenreList) {
-            assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
+            for (Genre expectedGenre : expectedGenreList) {
+                assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
+            }
         }
     }
 
@@ -56,7 +60,9 @@ public class DefaultGenreServiceTest {
         // Preparation
         GenreDao genreDao = mock(GenreDao.class);
 
-        GenreService genreService = new DefaultGenreService(genreDao);
+        GenreService innerGenreService = new DefaultGenreService(genreDao);
+
+        GenreService genreService = new CachedGenreService(innerGenreService);
 
         Genre expectedGenre = new Genre();
         expectedGenre.setId(1);
@@ -67,10 +73,11 @@ public class DefaultGenreServiceTest {
         when(genreDao.getGenreById(1)).thenReturn(expectedGenre);
 
         // Then
-        Genre actualGenre = genreService.getGenreById(1);
+        for (int i = 0; i < 4; i++) {
+            Genre actualGenre = genreService.getGenreById(1);
 
-        assertEquals(expectedGenre,actualGenre);
-
+            assertEquals(expectedGenre,actualGenre);
+        }
     }
 
 }

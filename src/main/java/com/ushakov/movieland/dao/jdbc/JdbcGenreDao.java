@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlInOutParameter;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Repository
 public class JdbcGenreDao implements GenreDao {
     private static final String GET_ALL_SQL = "SELECT id, name FROM genre";
+    private static final String GET_GENRE_BY_ID_SQL = "SELECT id, name FROM genre WHERE id = ?";
     private static final GenreRowMapper GENRE_ROW_MAPPER = new GenreRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -32,5 +34,14 @@ public class JdbcGenreDao implements GenreDao {
         logger.trace("Genres: {}", genreList);
 
         return genreList;
+    }
+
+    @Override
+    public Genre getGenreById(int id) {
+        Genre result = jdbcTemplate.queryForObject(GET_GENRE_BY_ID_SQL, GENRE_ROW_MAPPER, id);
+
+        logger.debug("Genre: {}", result);
+
+        return result;
     }
 }

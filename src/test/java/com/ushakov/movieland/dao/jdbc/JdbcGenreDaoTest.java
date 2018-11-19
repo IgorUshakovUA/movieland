@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +41,7 @@ public class JdbcGenreDaoTest {
         expectedGenreList.add(genre3);
 
         // When
-        when(jdbcTemplate.query(any(String.class),any(GenreRowMapper.class))).thenReturn(expectedGenreList);
+        when(jdbcTemplate.query(any(String.class), any(GenreRowMapper.class))).thenReturn(expectedGenreList);
 
         // Then
         List<Genre> actualGenreList = genreDao.getAll();
@@ -50,6 +51,29 @@ public class JdbcGenreDaoTest {
         for (Genre expectedGenre : expectedGenreList) {
             assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
         }
+    }
+
+    @Test
+    public void testGetGenreById() {
+        // Preparations
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        JdbcGenreDao genreDao = new JdbcGenreDao(jdbcTemplate);
+
+
+        Genre expectedGenre = new Genre();
+        expectedGenre.setId(1);
+        expectedGenre.setName("драма");
+
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class), any(GenreRowMapper.class), eq(1))).thenReturn(expectedGenre);
+
+        // Then
+        Genre actualGenre = genreDao.getGenreById(1);
+
+        assertEquals(expectedGenre, actualGenre);
+
     }
 
 }
