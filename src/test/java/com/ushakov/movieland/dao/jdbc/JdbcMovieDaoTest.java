@@ -1,8 +1,9 @@
 package com.ushakov.movieland.dao.jdbc;
 
+import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
-import com.ushakov.movieland.dao.SortField;
-import com.ushakov.movieland.dao.SortType;
+import com.ushakov.movieland.common.SortField;
+import com.ushakov.movieland.common.SortType;
 import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.ushakov.movieland.entity.Movie;
 import org.junit.Test;
@@ -18,6 +19,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class JdbcMovieDaoTest {
+    private static final String INITIAL_SQL = "SELECT * FROM table_name";
+    private static final String EXPECTED_SQL_RATING_DESC = "SELECT * FROM table_name ORDER BY rating DESC";
+    private static final String EXPECTED_SQL_PRICE_DESC = "SELECT * FROM table_name ORDER BY price DESC";
+    private static final String EXPECTED_SQL_PRICE_ASC = "SELECT * FROM table_name ORDER BY price ASC";
 
     @Test
     public void testGetAll() {
@@ -61,7 +66,7 @@ public class JdbcMovieDaoTest {
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class))).thenReturn(expectedMovieList);
 
         // Then
-        List<Movie> actualMovieList = movieDao.getAll();
+        List<Movie> actualMovieList = movieDao.getAll(null);
 
         for (Movie actualMovie : actualMovieList) {
             assertTrue(expectedMovieList.indexOf(actualMovie) > -1);
@@ -108,15 +113,19 @@ public class JdbcMovieDaoTest {
 
         MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.DESC);
+        requestSearchParam.setSortField(SortField.RATING);
+
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class))).thenReturn(expectedMovieList);
 
         // Then
-        List<Movie> actualMovieList = movieDao.getAllSorted(SortField.valueOf("RATING"), SortType.valueOf("DESC"));
+        List<Movie> actualMovieList = movieDao.getAll(requestSearchParam);
 
-        assertEquals(expectedMovieList.get(0),actualMovieList.get(0));
-        assertEquals(expectedMovieList.get(1),actualMovieList.get(1));
-        assertEquals(expectedMovieList.get(2),actualMovieList.get(2));
+        assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
+        assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
+        assertEquals(expectedMovieList.get(2), actualMovieList.get(2));
 
         assertEquals(3, expectedMovieList.size());
     }
@@ -159,15 +168,19 @@ public class JdbcMovieDaoTest {
 
         MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.ASC);
+        requestSearchParam.setSortField(SortField.PRICE);
+
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class))).thenReturn(expectedMovieList);
 
         // Then
-        List<Movie> actualMovieList = movieDao.getAllSorted(SortField.valueOf("PRICE"), SortType.valueOf("ASC"));
+        List<Movie> actualMovieList = movieDao.getAll(requestSearchParam);
 
-        assertEquals(expectedMovieList.get(0),actualMovieList.get(0));
-        assertEquals(expectedMovieList.get(1),actualMovieList.get(1));
-        assertEquals(expectedMovieList.get(2),actualMovieList.get(2));
+        assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
+        assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
+        assertEquals(expectedMovieList.get(2), actualMovieList.get(2));
 
         assertEquals(3, expectedMovieList.size());
     }
@@ -265,7 +278,7 @@ public class JdbcMovieDaoTest {
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class), any(Integer.class))).thenReturn(expectedMovieList);
 
         // Then
-        List<Movie> actualMovieList = movieDao.getMoviesByGenre(1);
+        List<Movie> actualMovieList = movieDao.getMoviesByGenre(1, null);
 
         for (Movie actualMovie : actualMovieList) {
             assertTrue(expectedMovieList.indexOf(actualMovie) > -1);
@@ -312,15 +325,19 @@ public class JdbcMovieDaoTest {
 
         MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.ASC);
+        requestSearchParam.setSortField(SortField.PRICE);
+
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class), any(Integer.class))).thenReturn(expectedMovieList);
 
         // Then
-        List<Movie> actualMovieList = movieDao.getMoviesByGenreSorted(1, SortField.valueOf("PRICE"), SortType.valueOf("ASC"));
+        List<Movie> actualMovieList = movieDao.getMoviesByGenre(1, requestSearchParam);
 
-        assertEquals(expectedMovieList.get(0),actualMovieList.get(0));
-        assertEquals(expectedMovieList.get(1),actualMovieList.get(1));
-        assertEquals(expectedMovieList.get(2),actualMovieList.get(2));
+        assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
+        assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
+        assertEquals(expectedMovieList.get(2), actualMovieList.get(2));
 
         assertEquals(3, expectedMovieList.size());
     }
@@ -363,17 +380,33 @@ public class JdbcMovieDaoTest {
 
         MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.DESC);
+        requestSearchParam.setSortField(SortField.RATING);
+
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class), any(Integer.class))).thenReturn(expectedMovieList);
 
         // Then
-        List<Movie> actualMovieList = movieDao.getMoviesByGenreSorted(1, SortField.valueOf("RATING"), SortType.valueOf("DESC"));
+        List<Movie> actualMovieList = movieDao.getMoviesByGenre(1, requestSearchParam);
 
-        assertEquals(expectedMovieList.get(0),actualMovieList.get(0));
-        assertEquals(expectedMovieList.get(1),actualMovieList.get(1));
-        assertEquals(expectedMovieList.get(2),actualMovieList.get(2));
+        assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
+        assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
+        assertEquals(expectedMovieList.get(2), actualMovieList.get(2));
 
         assertEquals(3, expectedMovieList.size());
     }
 
+    @Test
+    public void testBuildSortedQuery() {
+        // Prepare
+        String actualSqlRatingDesc = JdbcMovieDao.buildSortedQuery(INITIAL_SQL, SortField.RATING, SortType.DESC);
+        String actualSqlPriceDesc = JdbcMovieDao.buildSortedQuery(INITIAL_SQL, SortField.PRICE, SortType.DESC);
+        String actualSqlPriceAsc = JdbcMovieDao.buildSortedQuery(INITIAL_SQL, SortField.PRICE, SortType.ASC);
+
+        // Test
+        assertEquals(EXPECTED_SQL_RATING_DESC, actualSqlRatingDesc);
+        assertEquals(EXPECTED_SQL_PRICE_DESC, actualSqlPriceDesc);
+        assertEquals(EXPECTED_SQL_PRICE_ASC, actualSqlPriceAsc);
+    }
 }

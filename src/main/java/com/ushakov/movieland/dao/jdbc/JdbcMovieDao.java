@@ -1,8 +1,9 @@
 package com.ushakov.movieland.dao.jdbc;
 
+import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
-import com.ushakov.movieland.dao.SortField;
-import com.ushakov.movieland.dao.SortType;
+import com.ushakov.movieland.common.SortField;
+import com.ushakov.movieland.common.SortType;
 import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.ushakov.movieland.entity.Movie;
 import org.slf4j.Logger;
@@ -30,25 +31,23 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public List<Movie> getAll() {
-        List<Movie> movieList = jdbcTemplate.query(GET_ALL_SQL, MOVIE_ROW_MAPPER);
+    public List<Movie> getAll(RequestSearchParam requestSearchParam) {
+        SortField sortField;
+        SortType sortType;
+        String query;
 
-        logger.trace("All movies: {}", movieList);
+        if (requestSearchParam == null || (sortField = requestSearchParam.getSortField()) == null || (sortType = requestSearchParam.getSortType()) == null) {
+            query = GET_ALL_SQL;
+        } else {
+            logger.debug("Sorting field = {}, order = {}", sortField, sortType);
 
-        return movieList;
-    }
+            query = buildSortedQuery(GET_ALL_SQL, sortField, sortType);
+        }
 
-    @Override
-    public List<Movie> getAllSorted(SortField sortField, SortType sortType) {
-        StringBuilder query = new StringBuilder(GET_ALL_SQL);
-        query.append(" ORDER BY ");
-        query.append(sortField.value());
-        query.append(" ");
-        query.append(sortType.value());
+        List<Movie> movieList = jdbcTemplate.query(query, MOVIE_ROW_MAPPER);
 
-        List<Movie> movieList = jdbcTemplate.query(query.toString(), MOVIE_ROW_MAPPER);
-
-        logger.trace("All movies sorted by {} ordered {}: {}", sortField, sortType, movieList);
+        logger.debug("All movies, size: {}", movieList.size());
+        logger.trace("Movies: {}", movieList);
 
         return movieList;
     }
@@ -57,32 +56,41 @@ public class JdbcMovieDao implements MovieDao {
     public List<Movie> getThreeRandomMovies() {
         List<Movie> movieList = jdbcTemplate.query(GET_THREE_MOVIES_BY_IDS, MOVIE_ROW_MAPPER);
 
-        logger.trace("Three random movies: {}", movieList);
+        logger.debug("Three random movies, size: {}", movieList.size());
+        logger.trace("Movies: {}", movieList);
 
         return movieList;
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(int genreId) {
-        List<Movie> movieList = jdbcTemplate.query(GET_MOVIES_BY_GENRE_SQL, MOVIE_ROW_MAPPER, genreId);
+    public List<Movie> getMoviesByGenre(int genreId, RequestSearchParam requestSearchParam) {
+        SortField sortField;
+        SortType sortType;
+        String query;
 
-        logger.trace("Movies by genreId = {}: {}", genreId, movieList);
+        if (requestSearchParam == null || (sortField = requestSearchParam.getSortField()) == null || (sortType = requestSearchParam.getSortType()) == null) {
+            query = GET_MOVIES_BY_GENRE_SQL;
+        } else {
+            logger.debug("Sorting field = {}, order = {}", sortField, sortType);
+
+            query = buildSortedQuery(GET_MOVIES_BY_GENRE_SQL, sortField, sortType);
+        }
+
+        List<Movie> movieList = jdbcTemplate.query(query, MOVIE_ROW_MAPPER, genreId);
+
+        logger.debug("Movies by genreId = {} size: {}", genreId, movieList.size());
+        logger.trace("Movies: {}", movieList);
 
         return movieList;
     }
 
-    @Override
-    public List<Movie> getMoviesByGenreSorted(int genreId, SortField sortField, SortType sortType) {
-        StringBuilder query = new StringBuilder(GET_MOVIES_BY_GENRE_SQL);
+    static String buildSortedQuery(String baseQuery, SortField sortField, SortType sortType) {
+        StringBuilder query = new StringBuilder(baseQuery);
         query.append(" ORDER BY ");
         query.append(sortField.value());
         query.append(" ");
         query.append(sortType.value());
 
-        List<Movie> movieList = jdbcTemplate.query(query.toString(), MOVIE_ROW_MAPPER, genreId);
-
-        logger.trace("Movies by genreId = {} sorted by {} ordered {}: {}", genreId, sortField, sortType, movieList);
-
-        return movieList;
+        return query.toString();
     }
 }

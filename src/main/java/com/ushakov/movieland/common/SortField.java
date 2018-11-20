@@ -1,4 +1,4 @@
-package com.ushakov.movieland.dao;
+package com.ushakov.movieland.common;
 
 public enum SortField {
     RATING("rating"),

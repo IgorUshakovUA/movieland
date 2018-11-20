@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SqlInOutParameter;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -34,14 +33,5 @@ public class JdbcGenreDao implements GenreDao {
         logger.trace("Genres: {}", genreList);
 
         return genreList;
-    }
-
-    @Override
-    public Genre getGenreById(int id) {
-        Genre result = jdbcTemplate.queryForObject(GET_GENRE_BY_ID_SQL, GENRE_ROW_MAPPER, id);
-
-        logger.debug("Genre: {}", result);
-
-        return result;
     }
 }

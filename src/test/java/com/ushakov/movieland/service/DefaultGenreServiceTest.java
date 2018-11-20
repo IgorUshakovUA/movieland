@@ -50,27 +50,4 @@ public class DefaultGenreServiceTest {
             assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
         }
     }
-
-    @Test
-    public void testGetGenreById() {
-        // Preparation
-        GenreDao genreDao = mock(GenreDao.class);
-
-        GenreService genreService = new DefaultGenreService(genreDao);
-
-        Genre expectedGenre = new Genre();
-        expectedGenre.setId(1);
-        expectedGenre.setName("драма");
-
-
-        // When
-        when(genreDao.getGenreById(1)).thenReturn(expectedGenre);
-
-        // Then
-        Genre actualGenre = genreService.getGenreById(1);
-
-        assertEquals(expectedGenre,actualGenre);
-
-    }
-
 }

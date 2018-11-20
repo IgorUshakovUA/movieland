@@ -47,40 +47,14 @@ public class CachedGenreDaoTest {
         when(jdbcTemplate.query(any(String.class), any(GenreRowMapper.class))).thenReturn(expectedGenreList);
 
         // Then
-        for (int i = 0; i < 4; i++) {
-            List<Genre> actualGenreList = genreDao.getAll();
+        genreDao.reloadCache();
+        List<Genre> actualGenreList = genreDao.getAll();
 
-            assertEquals(expectedGenreList.size(), actualGenreList.size());
+        assertEquals(expectedGenreList.size(), actualGenreList.size());
 
-            for (Genre expectedGenre : expectedGenreList) {
-                assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
-            }
+        for (Genre expectedGenre : expectedGenreList) {
+            assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
         }
+
     }
-
-    @Test
-    public void testGetGenreById() {
-        // Preparations
-        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
-
-        JdbcGenreDao innerGenreDao = new JdbcGenreDao(jdbcTemplate);
-
-        CachedGenreDao genreDao = new CachedGenreDao(innerGenreDao);
-
-        Genre expectedGenre = new Genre();
-        expectedGenre.setId(1);
-        expectedGenre.setName("драма");
-
-
-        // When
-        when(jdbcTemplate.queryForObject(any(String.class), any(GenreRowMapper.class), eq(1))).thenReturn(expectedGenre);
-
-        // Then
-        for (int i = 0; i < 4; i++) {
-            Genre actualGenre = genreDao.getGenreById(1);
-
-            assertEquals(expectedGenre, actualGenre);
-        }
-    }
-
 }

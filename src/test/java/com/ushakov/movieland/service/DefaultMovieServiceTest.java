@@ -1,8 +1,9 @@
 package com.ushakov.movieland.service;
 
+import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
-import com.ushakov.movieland.dao.SortField;
-import com.ushakov.movieland.dao.SortType;
+import com.ushakov.movieland.common.SortField;
+import com.ushakov.movieland.common.SortType;
 import com.ushakov.movieland.entity.Movie;
 import org.junit.Test;
 
@@ -57,10 +58,10 @@ public class DefaultMovieServiceTest {
         MovieService movieService = new DefaultMovieService(movieDao);
 
         // When
-        when(movieDao.getAll()).thenReturn(expectedMovieList);
+        when(movieDao.getAll(null)).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getAll();
+        List<Movie> actualMovieList = movieService.getAll(null);
 
         for (Movie actualMovie : actualMovieList) {
             assertTrue(expectedMovieList.indexOf(actualMovie) > -1);
@@ -108,11 +109,15 @@ public class DefaultMovieServiceTest {
 
         MovieService movieService = new DefaultMovieService(movieDao);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.ASC);
+        requestSearchParam.setSortField(SortField.PRICE);
+
         // When
-        when(movieDao.getAllSorted(any(SortField.class), any(SortType.class))).thenReturn(expectedMovieList);
+        when(movieDao.getAll(any(RequestSearchParam.class))).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getAllSorted(SortField.valueOf("PRICE"), SortType.valueOf("ASC"));
+        List<Movie> actualMovieList = movieService.getAll(requestSearchParam);
 
         assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
         assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
@@ -160,11 +165,15 @@ public class DefaultMovieServiceTest {
 
         MovieService movieService = new DefaultMovieService(movieDao);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.DESC);
+        requestSearchParam.setSortField(SortField.RATING);
+
         // When
-        when(movieDao.getAllSorted(any(SortField.class), any(SortType.class))).thenReturn(expectedMovieList);
+        when(movieDao.getAll(any(RequestSearchParam.class))).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getAllSorted(SortField.valueOf("RATING"), SortType.valueOf("DESC"));
+        List<Movie> actualMovieList = movieService.getAll(requestSearchParam);
 
         assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
         assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
@@ -265,10 +274,10 @@ public class DefaultMovieServiceTest {
         MovieService movieService = new DefaultMovieService(movieDao);
 
         // When
-        when(movieDao.getMoviesByGenre(1)).thenReturn(expectedMovieList);
+        when(movieDao.getMoviesByGenre(1, null)).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getMoviesByGenre(1);
+        List<Movie> actualMovieList = movieService.getMoviesByGenre(1, null);
 
         for (Movie actualMovie : actualMovieList) {
             assertTrue(expectedMovieList.indexOf(actualMovie) > -1);
@@ -316,11 +325,15 @@ public class DefaultMovieServiceTest {
 
         MovieService movieService = new DefaultMovieService(movieDao);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.ASC);
+        requestSearchParam.setSortField(SortField.PRICE);
+
         // When
-        when(movieDao.getMoviesByGenreSorted(any(Integer.class), any(SortField.class), any(SortType.class))).thenReturn(expectedMovieList);
+        when(movieDao.getMoviesByGenre(any(Integer.class), any(RequestSearchParam.class))).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getMoviesByGenreSorted(1, SortField.valueOf("PRICE"), SortType.valueOf("ASC"));
+        List<Movie> actualMovieList = movieService.getMoviesByGenre(1, requestSearchParam);
 
         assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
         assertEquals(expectedMovieList.get(1), actualMovieList.get(1));
@@ -368,11 +381,15 @@ public class DefaultMovieServiceTest {
 
         MovieService movieService = new DefaultMovieService(movieDao);
 
+        RequestSearchParam requestSearchParam = new RequestSearchParam();
+        requestSearchParam.setSortType(SortType.DESC);
+        requestSearchParam.setSortField(SortField.RATING);
+
         // When
-        when(movieDao.getMoviesByGenreSorted(any(Integer.class), any(SortField.class), any(SortType.class))).thenReturn(expectedMovieList);
+        when(movieDao.getMoviesByGenre(any(Integer.class), any(RequestSearchParam.class))).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getMoviesByGenreSorted(1, SortField.valueOf("RATING"), SortType.valueOf("DESC"));
+        List<Movie> actualMovieList = movieService.getMoviesByGenre(1, requestSearchParam);
 
         assertEquals(expectedMovieList.get(0), actualMovieList.get(0));
         assertEquals(expectedMovieList.get(1), actualMovieList.get(1));

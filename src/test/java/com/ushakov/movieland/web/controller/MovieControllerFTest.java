@@ -12,6 +12,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
+
+import java.security.InvalidParameterException;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -58,18 +61,18 @@ public class MovieControllerFTest {
     }
 
     @Test
-    public void testGetAllSortedByRatingAsc() throws Exception {
-        mockMvc.perform(get("/v1/movie?rating=asc"))
+    public void testGetAllSortedByRatingDesc() throws Exception {
+        mockMvc.perform(get("/v1/movie?rating=desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(25)))
-                .andExpect(jsonPath("$[0].id", equalTo(23)))
-                .andExpect(jsonPath("$[0].nameRussian", equalTo("Блеф")))
-                .andExpect(jsonPath("$[0].nameNative", equalTo("Bluff storia di truffe e di imbroglioni")))
-                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1976)))
-                .andExpect(jsonPath("$[0].rating", equalTo(7.6)))
-                .andExpect(jsonPath("$[0].price", equalTo(100.0)))
-                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMjk5YmMxMjMtMTlkNi00YTI5LThhYTMtOTk2NmNiNzQwMzI0XkEyXkFqcGdeQXVyMTQ3Njg3MQ@@._V1._SX140_CR0,0,140,209_.jpg")));
+                .andExpect(jsonPath("$[0].id", equalTo(1)))
+                .andExpect(jsonPath("$[0].nameRussian", equalTo("Побег из Шоушенка")))
+                .andExpect(jsonPath("$[0].nameNative", equalTo("The Shawshank Redemption")))
+                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1994)))
+                .andExpect(jsonPath("$[0].rating", equalTo(8.9)))
+                .andExpect(jsonPath("$[0].price", equalTo(123.45)))
+                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")));
     }
 
     @Test
@@ -117,18 +120,24 @@ public class MovieControllerFTest {
     }
 
     @Test
-    public void testGetMoviesByGenreSortedByRatingAsc() throws Exception {
-        mockMvc.perform(get("/v1/movie/genre/1?rating=asc"))
+    public void testGetMoviesByGenreSortedByRatingDesc() throws Exception {
+        mockMvc.perform(get("/v1/movie/genre/1?rating=desc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(16)))
-                .andExpect(jsonPath("$[0].id", equalTo(12)))
-                .andExpect(jsonPath("$[0].nameRussian", equalTo("Титаник")))
-                .andExpect(jsonPath("$[0].nameNative", equalTo("Titanic")))
-                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1997)))
-                .andExpect(jsonPath("$[0].rating", equalTo(7.9)))
-                .andExpect(jsonPath("$[0].price", equalTo(150.0)))
-                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BMDdmZGU3NDQtY2E5My00ZTliLWIzOTUtMTY4ZGI1YjdiNjk3XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1._SY209_CR0,0,140,209_.jpg")));
+                .andExpect(jsonPath("$[0].id", equalTo(1)))
+                .andExpect(jsonPath("$[0].nameRussian", equalTo("Побег из Шоушенка")))
+                .andExpect(jsonPath("$[0].nameNative", equalTo("The Shawshank Redemption")))
+                .andExpect(jsonPath("$[0].yearOfRelease", equalTo(1994)))
+                .andExpect(jsonPath("$[0].rating", equalTo(8.9)))
+                .andExpect(jsonPath("$[0].price", equalTo(123.45)))
+                .andExpect(jsonPath("$[0].picturePath", equalTo("https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1._SY209_CR0,0,140,209_.jpg")));
+    }
+
+    @Test
+    public void testGetMoviesByGenreSortedByRatingAscBadRequest() throws Exception {
+        mockMvc.perform(get("/v1/movie/genre/1?rating=asc"))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
