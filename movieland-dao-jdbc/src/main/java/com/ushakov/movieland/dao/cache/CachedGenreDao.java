@@ -38,7 +38,7 @@ public class CachedGenreDao implements GenreDao {
         return genreList;
     }
 
-    @Scheduled(fixedRateString = "$(genre.cache.refresh.millis):900000")
+    @Scheduled(fixedRateString = "${genre.cache.refresh.millis}", initialDelayString = "${genre.cache.refresh.millis}")
     @PostConstruct
     public void reloadCache() {
         List<Genre> genreList = genreDao.getAll();
