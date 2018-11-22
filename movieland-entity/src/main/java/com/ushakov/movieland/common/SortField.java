@@ -7,7 +7,7 @@ public enum SortField {
     private String value;
 
     SortField(String value) {
-        this.value = value.trim().toLowerCase();
+        this.value = value.toLowerCase();
     }
 
     public String value() {

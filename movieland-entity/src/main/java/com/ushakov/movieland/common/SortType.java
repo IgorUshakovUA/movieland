@@ -7,10 +7,10 @@ public enum SortType {
     private String value;
 
     SortType(String value) {
-        this.value = value.trim().toUpperCase();
+        this.value = value.toUpperCase();
     }
 
     public String value() {
-        return  value;
+        return value;
     }
 }
