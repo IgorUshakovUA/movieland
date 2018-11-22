@@ -2,7 +2,6 @@ package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.common.*;
 import com.ushakov.movieland.entity.Movie;
-import com.ushakov.movieland.service.BadRequestException;
 import com.ushakov.movieland.service.MovieService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.WebDataBinder;

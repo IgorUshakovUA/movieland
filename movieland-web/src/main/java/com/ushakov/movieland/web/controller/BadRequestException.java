@@ -1,4 +1,4 @@
-package com.ushakov.movieland.service;
+package com.ushakov.movieland.web.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

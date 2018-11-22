@@ -43,35 +43,13 @@
         <!-- *** Internal *** -->
         <dependency>
             <groupId>com.ushakov</groupId>
-            <artifactId>movieland-entity</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ushakov</groupId>
-            <artifactId>movieland-dao</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ushakov</groupId>
             <artifactId>movieland-dao-jdbc</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ushakov</groupId>
-            <artifactId>movieland-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.ushakov</groupId>
             <artifactId>movieland-service-default</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- *** Web *** -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
         </dependency>
 
         <!-- *** Json *** -->
