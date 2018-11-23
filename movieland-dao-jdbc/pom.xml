@@ -28,7 +28,7 @@
         <!-- *** spring anntations *** -->
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
         <!-- *** DB *** -->
