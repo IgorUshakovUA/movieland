@@ -52,13 +52,9 @@ public class GenreControllerTest extends AbstractJUnit4SpringContextTests {
     @Test
     public void testGetAll() throws Exception {
         // Prepare
-        Genre first = new Genre();
-        first.setId(1);
-        first.setName("драма");
+        Genre first = new Genre(1, "драма");
 
-        Genre second = new Genre();
-        second.setId(2);
-        second.setName("криминал");
+        Genre second = new Genre(2, "криминал");
 
         // When
         when(genreService.getAll()).thenReturn(Arrays.asList(first, second));
