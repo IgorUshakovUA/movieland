@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Genre implements Cloneable {
+public class Genre {
     private int id;
     private String name;
 
@@ -20,15 +20,6 @@ public class Genre implements Cloneable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public Object clone() {
-        try {
-            return super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw  new RuntimeException(e);
-        }
     }
 
     @Override

@@ -11,10 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Primary
 @Repository
@@ -30,10 +27,7 @@ public class CachedGenreDao implements GenreDao {
 
     @Override
     public List<Genre> getAll() {
-        List<Genre> genreList = new ArrayList<>();
-        for (Genre value : cache.values()) {
-            genreList.add((Genre) value.clone());
-        }
+        List<Genre> genreList = Collections.unmodifiableList(new ArrayList<>(cache.values()));
 
         logger.debug("Genres from cache, size: {}", genreList.size());
         logger.trace("Genres: {}", genreList);
