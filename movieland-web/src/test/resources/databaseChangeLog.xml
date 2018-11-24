@@ -7,11 +7,11 @@
     <changeSet author="Igor Ushakov" id="sqlFile-schema" runAlways="true">
         <sqlFile dbms="h2"
                  relativeToChangelogFile="true"
-                 path="db/schema.sql"/>
+                 path="classpath:/db/schema.sql"/>
     </changeSet>
     <changeSet author="Igor Ushakov" id="sqlFile-test-data" runAlways="true">
         <sqlFile dbms="h2"
                  relativeToChangelogFile="true"
-                 path="db/test-data.sql"/>
+                 path="classpath:/db/test-data.sql"/>
     </changeSet>
 </databaseChangeLog>
