@@ -27,7 +27,7 @@ public class CachedGenreDao implements GenreDao {
 
     @Override
     public List<Genre> getAll() {
-        List<Genre> genreList = Collections.unmodifiableList(new ArrayList<>(cache.values()));
+        List<Genre> genreList = new ArrayList<>(cache.values());
 
         logger.debug("Genres from cache, size: {}", genreList.size());
         logger.trace("Genres: {}", genreList);

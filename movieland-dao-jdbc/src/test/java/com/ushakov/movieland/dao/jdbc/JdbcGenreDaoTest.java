@@ -24,7 +24,7 @@ public class JdbcGenreDaoTest {
 
         List<Genre> expectedGenreList = new ArrayList<>();
 
-        Genre genre1 = new Genre(1,"драма");
+        Genre genre1 = new Genre(1, "драма");
         expectedGenreList.add(genre1);
 
         Genre genre2 = new Genre(2, "криминал");
