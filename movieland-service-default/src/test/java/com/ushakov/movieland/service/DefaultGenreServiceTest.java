@@ -38,7 +38,7 @@ public class DefaultGenreServiceTest {
         // Then
         List<Genre> actualGenreList = genreService.getAll();
 
-        assertEquals(expectedGenreList.size(),actualGenreList.size());
+        assertEquals(expectedGenreList.size(), actualGenreList.size());
 
         for (Genre expectedGenre : expectedGenreList) {
             assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
