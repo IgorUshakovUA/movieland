@@ -4,7 +4,7 @@ package com.ushakov.movieland.web.controller;
 import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.common.SortField;
 import com.ushakov.movieland.common.SortType;
-import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.*;
 import com.ushakov.movieland.service.MovieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -99,6 +99,60 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[1].picturePath", equalTo("path2")));
 
         verify(movieService, times(1)).getAll(null);
+        verifyNoMoreInteractions(movieService);
+    }
+
+    @Test
+    public void testGetMovieById() throws Exception {
+        // Prepare
+        Genre genre = new Genre(1, "драма");
+
+        Country country = new Country(1, "США");
+
+        User user = new User(1, "nickname1");
+
+        Review review = new Review(1, user, "some text");
+
+
+        MovieDetailed expectedMovieDetailed = new MovieDetailed();
+        expectedMovieDetailed.setId(1);
+        expectedMovieDetailed.setNameRussian("Побег из Шоушенка");
+        expectedMovieDetailed.setNameNative("The Shawshank Redemption");
+        expectedMovieDetailed.setYearOfRelease(1994);
+        expectedMovieDetailed.setRating(8.9);
+        expectedMovieDetailed.setPrice(123.45);
+        expectedMovieDetailed.setPicturePath("path1");
+        expectedMovieDetailed.setGenres(Arrays.asList(genre));
+        expectedMovieDetailed.setCountries(Arrays.asList(country));
+        expectedMovieDetailed.setReviews(Arrays.asList(review));
+
+        // When
+        when(movieService.getMovieById(1)).thenReturn(expectedMovieDetailed);
+
+        // Then
+        mockMvc.perform(get("/v1/movie/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$.id", equalTo(1)))
+                .andExpect(jsonPath("$.nameRussian", equalTo("Побег из Шоушенка")))
+                .andExpect(jsonPath("$.nameNative", equalTo("The Shawshank Redemption")))
+                .andExpect(jsonPath("$.yearOfRelease", equalTo(1994)))
+                .andExpect(jsonPath("$.rating", equalTo(8.9)))
+                .andExpect(jsonPath("$.price", equalTo(123.45)))
+                .andExpect(jsonPath("$.picturePath", equalTo("path1")))
+                .andExpect(jsonPath("$.countries", hasSize(1)))
+                .andExpect(jsonPath("$.countries[0].id", equalTo(1)))
+                .andExpect(jsonPath("$.countries[0].name", equalTo("США")))
+                .andExpect(jsonPath("$.genres", hasSize(1)))
+                .andExpect(jsonPath("$.genres[0].id", equalTo(1)))
+                .andExpect(jsonPath("$.genres[0].name", equalTo("драма")))
+                .andExpect(jsonPath("$.reviews", hasSize(1)))
+                .andExpect(jsonPath("$.reviews[0].id", equalTo(1)))
+                .andExpect(jsonPath("$.reviews[0].user.id", equalTo(1)))
+                .andExpect(jsonPath("$.reviews[0].user.nickname", equalTo("nickname1")))
+                .andExpect(jsonPath("$.reviews[0].text", equalTo("some text")));
+
+        verify(movieService, times(1)).getMovieById(1);
         verifyNoMoreInteractions(movieService);
     }
 
@@ -198,7 +252,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[0].rating", equalTo(9.9)))
                 .andExpect(jsonPath("$[0].price", equalTo(134.67)))
                 .andExpect(jsonPath("$[0].picturePath", equalTo("path2")));
-  }
+    }
 
     @Test
     public void testGetThreeRandomMovies() throws Exception {
@@ -385,7 +439,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[2].rating", equalTo(8.6)))
                 .andExpect(jsonPath("$[2].price", equalTo(200.6)))
                 .andExpect(jsonPath("$[2].picturePath", equalTo("path3")));
-   }
+    }
 
     @Test
     public void testGetMoviesByGenreSortedByRatingDesc() throws Exception {

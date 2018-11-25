@@ -19,6 +19,7 @@ public class CachedGenreDao implements GenreDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private GenreDao genreDao;
     private volatile Map<Integer, Genre> cache = new HashMap<>();
+    private volatile Map<Integer, List<Genre>> cacheByGenreGroupId = new HashMap<>();
 
     @Autowired
     public CachedGenreDao(@Qualifier("jdbcGenreDao") GenreDao genreDao) {
@@ -31,6 +32,30 @@ public class CachedGenreDao implements GenreDao {
 
         logger.debug("Genres from cache, size: {}", genreList.size());
         logger.trace("Genres: {}", genreList);
+
+        return genreList;
+    }
+
+    @Override
+    public List<Genre> getGenresGenreGroupId(int genreGroupId) {
+        List<Genre> genreList = cacheByGenreGroupId.get(genreGroupId);
+
+        if(genreList != null) {
+            return genreList;
+        }
+
+        synchronized (cacheByGenreGroupId) {
+            genreList = cacheByGenreGroupId.get(genreGroupId);
+
+            if(genreList != null) {
+                return genreList;
+            }
+
+            Map<Integer, List<Genre>> newCache = new HashMap<>(cacheByGenreGroupId);
+            genreList = genreDao.getGenresGenreGroupId(genreGroupId);
+            newCache.put(genreGroupId, genreList);
+            cacheByGenreGroupId = newCache;
+        }
 
         return genreList;
     }
@@ -49,5 +74,11 @@ public class CachedGenreDao implements GenreDao {
         logger.trace("Genres: {}", genreList);
 
         cache = newCache;
+
+        logger.debug("Clear cache of genres by genre group id.");
+
+        synchronized (cacheByGenreGroupId) {
+            cacheByGenreGroupId = new HashMap<>();
+        }
     }
 }

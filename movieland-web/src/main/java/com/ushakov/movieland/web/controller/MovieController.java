@@ -2,6 +2,7 @@ package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.common.*;
 import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.MovieDetailed;
 import com.ushakov.movieland.service.MovieService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.WebDataBinder;
@@ -26,6 +27,11 @@ public class MovieController {
         }
 
         return movieService.getAll(getRequestSearchParam(ratingOrder, priceOrder));
+    }
+
+    @RequestMapping(path = "/v1/movie/{movieId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public MovieDetailed getMovieById(@PathVariable int movieId) {
+        return movieService.getMovieById(movieId);
     }
 
     @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

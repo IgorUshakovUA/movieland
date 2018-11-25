@@ -4,12 +4,14 @@ import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
 import com.ushakov.movieland.common.SortField;
 import com.ushakov.movieland.common.SortType;
+import com.ushakov.movieland.dao.jdbc.mapper.MovieDetailedRowMapper;
 import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
-import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.*;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -27,6 +29,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetAll() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -60,7 +63,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class))).thenReturn(expectedMovieList);
@@ -78,6 +81,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetAllSortedByRatingDesc() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -111,7 +115,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.DESC);
@@ -133,6 +137,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetAllSortedByPriceAsc() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -166,7 +171,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.ASC);
@@ -188,6 +193,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetThreeRandomMovies() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -221,7 +227,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class))).thenReturn(expectedMovieList);
@@ -239,6 +245,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetMoviesByGenre() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -272,7 +279,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         // When
         when(jdbcTemplate.query(any(String.class), any(MovieRowMapper.class), any(Integer.class))).thenReturn(expectedMovieList);
@@ -290,6 +297,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetMoviesByGenreSortedByPriceAsc() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -323,7 +331,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.ASC);
@@ -345,6 +353,7 @@ public class JdbcMovieDaoTest {
     @Test
     public void testGetMoviesByGenreSortedByRatingDesc() {
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -378,7 +387,7 @@ public class JdbcMovieDaoTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.DESC);
@@ -408,5 +417,42 @@ public class JdbcMovieDaoTest {
         assertEquals(EXPECTED_SQL_RATING_DESC, actualSqlRatingDesc);
         assertEquals(EXPECTED_SQL_PRICE_DESC, actualSqlPriceDesc);
         assertEquals(EXPECTED_SQL_PRICE_ASC, actualSqlPriceAsc);
+    }
+
+    @Test
+    public void testGetMovieById() throws Exception {
+        // Prepare
+        MovieDetailedRowMapper movieDetailedRowMapper = mock(MovieDetailedRowMapper.class);
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        Genre genre = new Genre(1, "genre1");
+
+        Country country = new Country(1, "country1");
+
+        User user = new User(1, "nickname1");
+
+        Review review = new Review(1, user, "some text");
+
+        MovieDetailed expectedMovieDetailed = new MovieDetailed();
+        expectedMovieDetailed.setId(1);
+        expectedMovieDetailed.setNameRussian("nameRussian1");
+        expectedMovieDetailed.setNameNative("nameNative1");
+        expectedMovieDetailed.setYearOfRelease(1999);
+        expectedMovieDetailed.setDescritpion("description1");
+        expectedMovieDetailed.setRating(8.5);
+        expectedMovieDetailed.setPrice(99.99);
+        expectedMovieDetailed.setPicturePath("picturePath1");
+        expectedMovieDetailed.setCountries(Arrays.asList(country));
+        expectedMovieDetailed.setGenres(Arrays.asList(genre));
+        expectedMovieDetailed.setReviews(Arrays.asList(review));
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class),any(MovieDetailedRowMapper.class),any(Integer.class))).thenReturn(expectedMovieDetailed);
+
+        // Then
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate, movieDetailedRowMapper);
+        MovieDetailed actualMoviedetailed = movieDao.getMovieById(1);
+
+        assertEquals(expectedMovieDetailed, actualMoviedetailed);
     }
 }

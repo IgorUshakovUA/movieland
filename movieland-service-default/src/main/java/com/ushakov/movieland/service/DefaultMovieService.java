@@ -3,6 +3,7 @@ package com.ushakov.movieland.service;
 import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
 import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.MovieDetailed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,11 @@ public class DefaultMovieService implements MovieService {
     @Override
     public List<Movie> getMoviesByGenre(int genreId, RequestSearchParam requestSearchParam) {
         return movieDao.getMoviesByGenre(genreId, requestSearchParam);
+    }
+
+    @Override
+    public MovieDetailed getMovieById(int id) {
+        return movieDao.getMovieById(id);
     }
 
 }
