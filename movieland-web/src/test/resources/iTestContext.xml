@@ -10,11 +10,14 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
+    <bean id="jDataSource" class="org.h2.jdbcx.JdbcDataSource">
+        <property name="URL" value="jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1"/>
+        <property name="user" value="sa"/>
+        <property name="password" value=""/>
+    </bean>
 
-    <beans profile="h2">
-        <jdbc:embedded-database id="dataSource" type="H2">
-            <jdbc:script location="classpath:db/schema.sql"/>
-            <jdbc:script location="classpath:db/test-data.sql"/>
-        </jdbc:embedded-database>
-    </beans>
+    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+        <property name="dataSource" ref="jDataSource"/>
+        <property name="changeLog" value="classpath:databaseChangeLog.xml"/>
+    </bean>
 </beans>

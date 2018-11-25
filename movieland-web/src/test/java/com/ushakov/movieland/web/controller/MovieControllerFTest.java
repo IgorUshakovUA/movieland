@@ -1,11 +1,12 @@
 package com.ushakov.movieland.web.controller;
 
+import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -30,8 +31,16 @@ public class MovieControllerFTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private JdbcDataSource jDataSource;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @Before
     public void setUp() {
+        jdbcTemplate.setDataSource(jDataSource);
+
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
