@@ -74,17 +74,17 @@ public class CachedGenreDaoTest {
         when(jdbcTemplate.query(any(String.class), any(GenreRowMapper.class), any(Integer.class))).thenReturn(Arrays.asList(genre1, genre2));
 
         // Then
-        List<Genre> actualGenreList = genreDao.getGenresGenreGroupId(1);
+        List<Genre> actualGenreList = genreDao.getGenresByMovieId(1);
 
         assertEquals(expectedGenreList, actualGenreList);
 
-        actualGenreList = genreDao.getGenresGenreGroupId(1);
+        actualGenreList = genreDao.getGenresByMovieId(1);
 
         assertEquals(expectedGenreList, actualGenreList);
 
         genreDao.reloadCache();
 
-        actualGenreList = genreDao.getGenresGenreGroupId(1);
+        actualGenreList = genreDao.getGenresByMovieId(1);
 
         assertEquals(expectedGenreList, actualGenreList);
 

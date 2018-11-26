@@ -23,16 +23,15 @@ public class JdbcMovieDao implements MovieDao {
     private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
     private static final String GET_MOVIE_BY_ID_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description, movie.genreGroupId, movie.countryGroupId FROM movie, poster WHERE movie.posterId = poster.id AND movie.id = ?";
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
+    private static final MovieDetailedRowMapper MOVIE_DETAILED_ROW_MAPPER = new MovieDetailedRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
     private JdbcTemplate jdbcTemplate;
-    private MovieDetailedRowMapper movieDetailedRowMapper;
 
     @Autowired
-    public JdbcMovieDao(JdbcTemplate jdbcTemplate, MovieDetailedRowMapper movieDetailedRowMapper) {
+    public JdbcMovieDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.movieDetailedRowMapper = movieDetailedRowMapper;
     }
 
     @Override
@@ -91,7 +90,7 @@ public class JdbcMovieDao implements MovieDao {
 
     @Override
     public MovieDetailed getMovieById(int id) {
-        MovieDetailed movieDetailed = jdbcTemplate.queryForObject(GET_MOVIE_BY_ID_SQL, movieDetailedRowMapper, id);
+        MovieDetailed movieDetailed = jdbcTemplate.queryForObject(GET_MOVIE_BY_ID_SQL, MOVIE_DETAILED_ROW_MAPPER, id);
 
         logger.debug("Movie: ", movieDetailed);
 

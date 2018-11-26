@@ -66,7 +66,7 @@ public class JdbcGenreDaoTest {
 
         // Then
         GenreDao genreDao = new JdbcGenreDao(jdbcTemplate);
-        List<Genre> actualGenreList = genreDao.getGenresGenreGroupId(1);
+        List<Genre> actualGenreList = genreDao.getGenresByMovieId(1);
 
         assertEquals(expectedGenreList, actualGenreList);
     }

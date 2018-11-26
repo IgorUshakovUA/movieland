@@ -12,10 +12,16 @@ import java.util.List;
 @Service
 public class DefaultMovieService implements MovieService {
     private MovieDao movieDao;
+    private CountryService countryService;
+    private GenreService genreService;
+    private ReviewService reviewService;
 
     @Autowired
-    public DefaultMovieService(MovieDao movieDao) {
+    public DefaultMovieService(MovieDao movieDao, CountryService countryService, GenreService genreService, ReviewService reviewService) {
         this.movieDao = movieDao;
+        this.countryService = countryService;
+        this.genreService = genreService;
+        this.reviewService = reviewService;
     }
 
     @Override
@@ -35,7 +41,10 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public MovieDetailed getMovieById(int id) {
-        return movieDao.getMovieById(id);
+        MovieDetailed movieDetailed = movieDao.getMovieById(id);
+        movieDetailed.setCountries(countryService.getCountriesByMovieId(id));
+        movieDetailed.setGenres(genreService.getGenresByMovieId(id));
+        movieDetailed.setReviews(reviewService.getReviewsByMovieId(id));
+        return movieDetailed;
     }
-
 }

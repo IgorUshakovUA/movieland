@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Primary
 @Repository
@@ -19,7 +20,7 @@ public class CachedGenreDao implements GenreDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private GenreDao genreDao;
     private volatile Map<Integer, Genre> cache = new HashMap<>();
-    private volatile Map<Integer, List<Genre>> cacheByGenreGroupId = new HashMap<>();
+    private volatile Map<Integer, List<Genre>> cacheByMovieId = new ConcurrentHashMap<>();
 
     @Autowired
     public CachedGenreDao(@Qualifier("jdbcGenreDao") GenreDao genreDao) {
@@ -37,25 +38,16 @@ public class CachedGenreDao implements GenreDao {
     }
 
     @Override
-    public List<Genre> getGenresGenreGroupId(int genreGroupId) {
-        List<Genre> genreList = cacheByGenreGroupId.get(genreGroupId);
+    public List<Genre> getGenresByMovieId(int movieId) {
+        List<Genre> genreList = cacheByMovieId.get(movieId);
 
-        if(genreList != null) {
+        if (genreList != null) {
             return genreList;
         }
 
-        synchronized (cacheByGenreGroupId) {
-            genreList = cacheByGenreGroupId.get(genreGroupId);
+        genreList = genreDao.getGenresByMovieId(movieId);
 
-            if(genreList != null) {
-                return genreList;
-            }
-
-            Map<Integer, List<Genre>> newCache = new HashMap<>(cacheByGenreGroupId);
-            genreList = genreDao.getGenresGenreGroupId(genreGroupId);
-            newCache.put(genreGroupId, genreList);
-            cacheByGenreGroupId = newCache;
-        }
+        cacheByMovieId.putIfAbsent(movieId, genreList);
 
         return genreList;
     }
@@ -77,8 +69,6 @@ public class CachedGenreDao implements GenreDao {
 
         logger.debug("Clear cache of genres by genre group id.");
 
-        synchronized (cacheByGenreGroupId) {
-            cacheByGenreGroupId = new HashMap<>();
-        }
+        cacheByMovieId = new ConcurrentHashMap<>();
     }
 }

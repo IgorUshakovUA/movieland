@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public class JdbcCountryDao implements CountryDao {
-    private static final String GET_COUNTRIES_BY_COUNTRY_GROUP_ID_SQL = "SELECT country.id, country.name FROM country, countryGroup WHERE countryGroup.id = ? AND countryGroup.countryId = country.id";
+    private static final String GET_COUNTRIES_BY_COUNTRY_GROUP_ID_SQL = "SELECT country.id, country.name FROM movie, country, countryGroup WHERE movie.id = ? AND movie.countryGroupid = countryGroup.id AND countryGroup.countryId = country.id";
     private static final CountryRowMapper COUNTRY_ROW_MAPPER = new CountryRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -25,10 +25,10 @@ public class JdbcCountryDao implements CountryDao {
     }
 
     @Override
-    public List<Country> getCountriesByCountryGroupId(int countryGroupId) {
-        List<Country> countryList = jdbcTemplate.query(GET_COUNTRIES_BY_COUNTRY_GROUP_ID_SQL, COUNTRY_ROW_MAPPER, countryGroupId);
+    public List<Country> getCountriesByMovieId(int movieId) {
+        List<Country> countryList = jdbcTemplate.query(GET_COUNTRIES_BY_COUNTRY_GROUP_ID_SQL, COUNTRY_ROW_MAPPER, movieId);
 
-        logger.debug("Countries by countryGroupId = {}, size: {}", countryGroupId, countryList.size());
+        logger.debug("Countries by movieId = {}, size: {}", movieId, countryList.size());
         logger.trace("Countries: {}", countryList);
 
         return countryList;

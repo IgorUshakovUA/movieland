@@ -32,7 +32,7 @@ public class JdbcCountryDaoTest {
 
         // Then
         CountryDao countryDao = new JdbcCountryDao(jdbcTemplate);
-        List<Country> actualCountryList = countryDao.getCountriesByCountryGroupId(3);
+        List<Country> actualCountryList = countryDao.getCountriesByMovieId(3);
 
         assertEquals(expectedCountryList, actualCountryList);
     }

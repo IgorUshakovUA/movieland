@@ -21,7 +21,6 @@ public class JdbcReviewDaoTest {
     public void testGetReviewesByMovieId() {
         // Prepare
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
-        ReviewRowMapper reviewRowMapper = mock(ReviewRowMapper.class);
 
         User user1 = new User(1, "nickname1");
 
@@ -37,8 +36,8 @@ public class JdbcReviewDaoTest {
         when(jdbcTemplate.query(any(String.class), any(ReviewRowMapper.class), any(Integer.class))).thenReturn(Arrays.asList(review1, review2));
 
         // Then
-        ReviewDao reviewDao = new JdbcReviewDao(jdbcTemplate, reviewRowMapper);
-        List<Review> actualReviewList = reviewDao.getReviewesByMovieId(1);
+        ReviewDao reviewDao = new JdbcReviewDao(jdbcTemplate);
+        List<Review> actualReviewList = reviewDao.getReviewsByMovieId(1);
 
         assertEquals(expectedReviewList, actualReviewList);
     }

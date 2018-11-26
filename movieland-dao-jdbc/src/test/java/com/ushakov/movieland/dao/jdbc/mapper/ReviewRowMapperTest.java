@@ -27,9 +27,10 @@ public class ReviewRowMapperTest {
         when(resultSet.getInt("userId")).thenReturn(1);
         when(resultSet.getInt("id")).thenReturn(1);
         when(resultSet.getString("comment")).thenReturn("some text");
+        when(resultSet.getString("nickName")).thenReturn("my nick name");
 
         // Then
-        ReviewRowMapper rowMapper = new ReviewRowMapper(userDao);
+        ReviewRowMapper rowMapper = new ReviewRowMapper();
         Review actualreview = rowMapper.mapRow(resultSet, 1);
 
         assertEquals(expectedReview, actualreview);
