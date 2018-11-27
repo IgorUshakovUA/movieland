@@ -27,6 +27,11 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
+    public List<Movie> getAll() {
+        return getAll(null);
+    }
+
+    @Override
     public List<Movie> getAll(RequestSearchParam requestSearchParam) {
         return movieDao.getAll(requestSearchParam);
     }
@@ -37,8 +42,18 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
+    public List<Movie> getMoviesByGenre(int genreId) {
+        return getMoviesByGenre(genreId, null);
+    }
+
+    @Override
     public List<Movie> getMoviesByGenre(int genreId, RequestSearchParam requestSearchParam) {
         return movieDao.getMoviesByGenre(genreId, requestSearchParam);
+    }
+
+    @Override
+    public MovieDetailed getMovieById(int id) {
+        return getMovieById(id, null);
     }
 
     @Override

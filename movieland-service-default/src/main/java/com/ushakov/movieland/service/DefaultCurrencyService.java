@@ -1,70 +1,59 @@
 package com.ushakov.movieland.service;
 
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ushakov.movieland.common.Currency;
 import com.ushakov.movieland.entity.NbuCurrency;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
 import java.util.List;
 
 @Service
 public class DefaultCurrencyService implements CurrencyService {
+    private static final String REST_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=";
+    private static final ParameterizedTypeReference<List<NbuCurrency>> PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<List<NbuCurrency>>() {
+    };
+    LocalDate lastUpdated;
+
+    private RestTemplate restTemplate;
+
+    private NbuCurrency usdCurrency;
+    private NbuCurrency eurCurrency;
+
+    @Autowired
+    public DefaultCurrencyService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
     @Override
     public double getCurrencyRate(Currency currency) {
         if (currency == null) {
             return 1;
         }
 
-        URI uri;
-        try {
-            uri = new URI(buildCurrencyUrl(currency));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+        if (lastUpdated == null || lastUpdated.getDayOfMonth() != LocalDate.now().getDayOfMonth()) {
+            lastUpdated = LocalDate.now();
+            usdCurrency = getCurrency(Currency.USD);
+            eurCurrency = getCurrency(Currency.EUR);
         }
 
-        CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpResponse response;
-
-        try {
-            response = httpclient.execute(httpGet);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (currency == Currency.EUR) {
+            return eurCurrency.getRate();
+        } else {
+            return usdCurrency.getRate();
         }
+    }
 
-        HttpEntity entity = response.getEntity();
-        String result;
-
-        try {
-            result = EntityUtils.toString(entity);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        result = (result.replace("[", "")).replace("]", "");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            NbuCurrency nbuCurrency = mapper.readValue(result, NbuCurrency.class);
-
-            return nbuCurrency.getRate();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private NbuCurrency getCurrency(Currency currency) {
+        String eurURL = buildCurrencyUrl(currency);
+        ResponseEntity<List<NbuCurrency>> responseEntity = restTemplate.exchange(eurURL, HttpMethod.GET, null, PARAMETERIZED_TYPE_REFERENCE);
+        List<NbuCurrency> currencyList = responseEntity.getBody();
+        return currencyList.get(0);
     }
 
     public static String buildCurrencyUrl(Currency currency) {
@@ -75,12 +64,12 @@ public class DefaultCurrencyService implements CurrencyService {
         LocalDate localDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-        StringBuilder result = new StringBuilder();
+        StringBuilder result = new StringBuilder(REST_URL);
 
         if (currency == Currency.EUR) {
-            result.append("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=EUR&date=");
+            result.append("EUR&date=");
         } else {
-            result.append("https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=USD&date=");
+            result.append("USD&date=");
         }
 
         result.append(localDate.format(formatter));

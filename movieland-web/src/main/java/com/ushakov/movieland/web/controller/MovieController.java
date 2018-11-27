@@ -23,7 +23,7 @@ public class MovieController {
     @RequestMapping(path = "/v1/movie", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
         if (ratingOrder == null && priceOrder == null) {
-            return movieService.getAll(null);
+            return movieService.getAll();
         }
 
         return movieService.getAll(getRequestSearchParam(ratingOrder, priceOrder));
@@ -37,7 +37,7 @@ public class MovieController {
             requestSearchParam.setCurrency(currency);
             return movieService.getMovieById(movieId, requestSearchParam);
         } else {
-            return movieService.getMovieById(movieId, null);
+            return movieService.getMovieById(movieId);
         }
     }
 
@@ -49,7 +49,7 @@ public class MovieController {
     @RequestMapping(path = "/v1/movie/genre/{genreId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getMoviesByGenre(@PathVariable int genreId, @RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
         if (ratingOrder == null && priceOrder == null) {
-            return movieService.getMoviesByGenre(genreId, null);
+            return movieService.getMoviesByGenre(genreId);
         }
 
         return movieService.getMoviesByGenre(genreId, getRequestSearchParam(ratingOrder, priceOrder));

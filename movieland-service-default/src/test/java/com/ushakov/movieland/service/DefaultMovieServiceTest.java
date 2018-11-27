@@ -65,7 +65,7 @@ public class DefaultMovieServiceTest {
         when(movieDao.getAll(null)).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getAll(null);
+        List<Movie> actualMovieList = movieService.getAll();
 
         for (Movie actualMovie : actualMovieList) {
             assertTrue(expectedMovieList.indexOf(actualMovie) > -1);
@@ -297,7 +297,7 @@ public class DefaultMovieServiceTest {
         when(movieDao.getMoviesByGenre(1, null)).thenReturn(expectedMovieList);
 
         //Then
-        List<Movie> actualMovieList = movieService.getMoviesByGenre(1, null);
+        List<Movie> actualMovieList = movieService.getMoviesByGenre(1);
 
         for (Movie actualMovie : actualMovieList) {
             assertTrue(expectedMovieList.indexOf(actualMovie) > -1);

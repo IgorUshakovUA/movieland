@@ -1,0 +1,14 @@
+genre:
+  cache:
+     refresh:
+       millis: 14400000
+my:
+  job:
+    scheduler:
+      pool:
+        size: 1
+    executor:
+      queue:
+        capacity: 0
+      pool:
+        size: 1
