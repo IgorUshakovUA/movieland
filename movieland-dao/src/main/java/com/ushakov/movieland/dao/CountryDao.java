@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CountryDao {
     List<Country> getCountriesByMovieId(int movieId);
+    List<Country> getAll();
 }

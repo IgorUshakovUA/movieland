@@ -37,4 +37,24 @@ public class JdbcCountryDaoTest {
         assertEquals(expectedCountryList, actualCountryList);
     }
 
+    @Test
+    public void testGetAll() {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        Country country1 = new Country(1, "США");
+
+        Country country2 = new Country(2, "Великобритания");
+
+        List<Country> expectedCountryList = Arrays.asList(country1, country2);
+
+        // When
+        when(jdbcTemplate.query(any(String.class), any(CountryRowMapper.class))).thenReturn(Arrays.asList(country1, country2));
+
+        // Then
+        CountryDao countryDao = new JdbcCountryDao(jdbcTemplate);
+        List<Country> actualCountryList = countryDao.getAll();
+
+        assertEquals(expectedCountryList, actualCountryList);
+    }
 }
