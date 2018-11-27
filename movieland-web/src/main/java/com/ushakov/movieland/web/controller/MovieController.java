@@ -30,8 +30,15 @@ public class MovieController {
     }
 
     @RequestMapping(path = "/v1/movie/{movieId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public MovieDetailed getMovieById(@PathVariable int movieId) {
-        return movieService.getMovieById(movieId);
+    public MovieDetailed getMovieById(@PathVariable int movieId, @RequestParam(name = "currency", required = false) Currency currency) {
+
+        if (currency != null) {
+            RequestSearchParam requestSearchParam = new RequestSearchParam();
+            requestSearchParam.setCurrency(currency);
+            return movieService.getMovieById(movieId, requestSearchParam);
+        } else {
+            return movieService.getMovieById(movieId, null);
+        }
     }
 
     @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

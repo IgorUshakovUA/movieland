@@ -17,5 +17,17 @@
             <groupId>com.ushakov</groupId>
             <artifactId>movieland-dao</artifactId>
         </dependency>
+
+        <!-- *** Json *** -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- *** Http Client *** -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -25,6 +25,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -58,7 +59,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         // When
         when(movieDao.getAll(null)).thenReturn(expectedMovieList);
@@ -80,6 +81,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -113,7 +115,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.ASC);
@@ -139,6 +141,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -172,7 +175,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.DESC);
@@ -198,6 +201,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -231,7 +235,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         // When
         when(movieDao.getThreeRandomMovies()).thenReturn(expectedMovieList);
@@ -253,6 +257,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -286,7 +291,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         // When
         when(movieDao.getMoviesByGenre(1, null)).thenReturn(expectedMovieList);
@@ -308,6 +313,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -341,7 +347,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.ASC);
@@ -367,6 +373,7 @@ public class DefaultMovieServiceTest {
         GenreService genreService = mock(GenreService.class);
         CountryService countryService = mock(CountryService.class);
         ReviewService reviewService = mock(ReviewService.class);
+        CurrencyService currencyService = mock(CurrencyService.class);
 
         List<Movie> expectedMovieList = new ArrayList<>();
 
@@ -400,7 +407,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.DESC);

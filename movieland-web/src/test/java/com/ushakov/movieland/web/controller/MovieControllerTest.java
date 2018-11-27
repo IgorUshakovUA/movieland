@@ -127,7 +127,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         expectedMovieDetailed.setReviews(Arrays.asList(review));
 
         // When
-        when(movieService.getMovieById(1)).thenReturn(expectedMovieDetailed);
+        when(movieService.getMovieById(1, null)).thenReturn(expectedMovieDetailed);
 
         // Then
         mockMvc.perform(get("/v1/movie/1"))
@@ -152,7 +152,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$.reviews[0].user.nickname", equalTo("nickname1")))
                 .andExpect(jsonPath("$.reviews[0].text", equalTo("some text")));
 
-        verify(movieService, times(1)).getMovieById(1);
+        verify(movieService, times(1)).getMovieById(1, null);
         verifyNoMoreInteractions(movieService);
     }
 

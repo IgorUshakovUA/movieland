@@ -10,7 +10,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <context:property-placeholder location="classpath:application.properties" />
+    <context:property-placeholder location="classpath:application.properties"/>
 
     <task:annotation-driven executor="myExecutor" scheduler="myScheduler"/>
 
@@ -19,7 +19,7 @@
                    queue-capacity="${my.job.executor.queue.capacity:0}"
                    rejection-policy="CALLER_RUNS"/>
 
-    <task:scheduler id="myScheduler" pool-size="${my.job.scheduler.pool.size:4}"  />
+    <task:scheduler id="myScheduler" pool-size="${my.job.scheduler.pool.size:4}"/>
 
     <context:component-scan base-package="com.ushakov.movieland">
         <context:exclude-filter type="regex" expression="com\.ushakov\.movieland\.web\.*"/>
@@ -28,8 +28,12 @@
     <bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">
             <map>
-                <entry key="com.ushakov.movieland.common.SortField" value="com.ushakov.movieland.common.SortFieldConverter" />
-                <entry key="com.ushakov.movieland.common.SortType" value="com.ushakov.movieland.common.SortTypeConverter" />
+                <entry key="com.ushakov.movieland.common.SortField"
+                       value="com.ushakov.movieland.common.SortFieldConverter"/>
+                <entry key="com.ushakov.movieland.common.SortType"
+                       value="com.ushakov.movieland.common.SortTypeConverter"/>
+                <entry key="com.ushakov.movieland.common.Currency"
+                       value="com.ushakov.movieland.common.CurrencyConverter"/>
             </map>
         </property>
     </bean>
