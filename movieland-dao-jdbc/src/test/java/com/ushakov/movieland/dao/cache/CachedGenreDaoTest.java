@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -49,6 +50,43 @@ public class CachedGenreDaoTest {
         for (Genre expectedGenre : expectedGenreList) {
             assertTrue(actualGenreList.indexOf(expectedGenre) > -1);
         }
+
+    }
+
+    @Test
+    public void testGetGenresByGenreGroupId() {
+        // Preparations
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        JdbcGenreDao innerGenreDao = new JdbcGenreDao(jdbcTemplate);
+
+        CachedGenreDao genreDao = new CachedGenreDao(innerGenreDao);
+
+        List<Genre> expectedGenreList = new ArrayList<>();
+
+        Genre genre1 = new Genre(1, "драма");
+        expectedGenreList.add(genre1);
+
+        Genre genre2 = new Genre(2, "криминал");
+        expectedGenreList.add(genre2);
+
+        // When
+        when(jdbcTemplate.query(any(String.class), any(GenreRowMapper.class), any(Integer.class))).thenReturn(Arrays.asList(genre1, genre2));
+
+        // Then
+        List<Genre> actualGenreList = genreDao.getGenresByMovieId(1);
+
+        assertEquals(expectedGenreList, actualGenreList);
+
+        actualGenreList = genreDao.getGenresByMovieId(1);
+
+        assertEquals(expectedGenreList, actualGenreList);
+
+        genreDao.reloadCache();
+
+        actualGenreList = genreDao.getGenresByMovieId(1);
+
+        assertEquals(expectedGenreList, actualGenreList);
 
     }
 }

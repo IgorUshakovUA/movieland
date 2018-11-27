@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Primary
 @Repository
@@ -19,6 +20,7 @@ public class CachedGenreDao implements GenreDao {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private GenreDao genreDao;
     private volatile Map<Integer, Genre> cache = new HashMap<>();
+    private volatile Map<Integer, List<Genre>> cacheByMovieId = new ConcurrentHashMap<>();
 
     @Autowired
     public CachedGenreDao(@Qualifier("jdbcGenreDao") GenreDao genreDao) {
@@ -31,6 +33,21 @@ public class CachedGenreDao implements GenreDao {
 
         logger.debug("Genres from cache, size: {}", genreList.size());
         logger.trace("Genres: {}", genreList);
+
+        return genreList;
+    }
+
+    @Override
+    public List<Genre> getGenresByMovieId(int movieId) {
+        List<Genre> genreList = cacheByMovieId.get(movieId);
+
+        if (genreList != null) {
+            return genreList;
+        }
+
+        genreList = genreDao.getGenresByMovieId(movieId);
+
+        cacheByMovieId.putIfAbsent(movieId, genreList);
 
         return genreList;
     }
@@ -49,5 +66,9 @@ public class CachedGenreDao implements GenreDao {
         logger.trace("Genres: {}", genreList);
 
         cache = newCache;
+
+        logger.debug("Clear cache of genres by genre group id.");
+
+        cacheByMovieId = new ConcurrentHashMap<>();
     }
 }

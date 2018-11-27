@@ -4,12 +4,14 @@ import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
 import com.ushakov.movieland.common.SortField;
 import com.ushakov.movieland.common.SortType;
+import com.ushakov.movieland.dao.jdbc.mapper.MovieDetailedRowMapper;
 import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
-import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.*;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -408,5 +410,30 @@ public class JdbcMovieDaoTest {
         assertEquals(EXPECTED_SQL_RATING_DESC, actualSqlRatingDesc);
         assertEquals(EXPECTED_SQL_PRICE_DESC, actualSqlPriceDesc);
         assertEquals(EXPECTED_SQL_PRICE_ASC, actualSqlPriceAsc);
+    }
+
+    @Test
+    public void testGetMovieById() throws Exception {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        MovieDetailed expectedMovieDetailed = new MovieDetailed();
+        expectedMovieDetailed.setId(1);
+        expectedMovieDetailed.setNameRussian("nameRussian1");
+        expectedMovieDetailed.setNameNative("nameNative1");
+        expectedMovieDetailed.setYearOfRelease(1999);
+        expectedMovieDetailed.setDescritpion("description1");
+        expectedMovieDetailed.setRating(8.5);
+        expectedMovieDetailed.setPrice(99.99);
+        expectedMovieDetailed.setPicturePath("picturePath1");
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class),any(MovieDetailedRowMapper.class),any(Integer.class))).thenReturn(expectedMovieDetailed);
+
+        // Then
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        MovieDetailed actualMoviedetailed = movieDao.getMovieById(1);
+
+        assertEquals(expectedMovieDetailed, actualMoviedetailed);
     }
 }

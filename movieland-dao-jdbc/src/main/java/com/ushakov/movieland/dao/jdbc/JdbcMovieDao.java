@@ -4,8 +4,10 @@ import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
 import com.ushakov.movieland.common.SortField;
 import com.ushakov.movieland.common.SortType;
+import com.ushakov.movieland.dao.jdbc.mapper.MovieDetailedRowMapper;
 import com.ushakov.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.MovieDetailed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,9 @@ public class JdbcMovieDao implements MovieDao {
     private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id";
     private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
     private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
+    private static final String GET_MOVIE_BY_ID_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description, movie.genreGroupId, movie.countryGroupId FROM movie, poster WHERE movie.posterId = poster.id AND movie.id = ?";
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
+    private static final MovieDetailedRowMapper MOVIE_DETAILED_ROW_MAPPER = new MovieDetailedRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -82,6 +86,15 @@ public class JdbcMovieDao implements MovieDao {
         logger.trace("Movies: {}", movieList);
 
         return movieList;
+    }
+
+    @Override
+    public MovieDetailed getMovieById(int id) {
+        MovieDetailed movieDetailed = jdbcTemplate.queryForObject(GET_MOVIE_BY_ID_SQL, MOVIE_DETAILED_ROW_MAPPER, id);
+
+        logger.debug("Movie: ", movieDetailed);
+
+        return movieDetailed;
     }
 
     static String buildSortedQuery(String baseQuery, SortField sortField, SortType sortType) {

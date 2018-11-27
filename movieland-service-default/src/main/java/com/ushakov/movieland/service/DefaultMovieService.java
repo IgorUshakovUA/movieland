@@ -3,6 +3,7 @@ package com.ushakov.movieland.service;
 import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
 import com.ushakov.movieland.entity.Movie;
+import com.ushakov.movieland.entity.MovieDetailed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +12,16 @@ import java.util.List;
 @Service
 public class DefaultMovieService implements MovieService {
     private MovieDao movieDao;
+    private CountryService countryService;
+    private GenreService genreService;
+    private ReviewService reviewService;
 
     @Autowired
-    public DefaultMovieService(MovieDao movieDao) {
+    public DefaultMovieService(MovieDao movieDao, CountryService countryService, GenreService genreService, ReviewService reviewService) {
         this.movieDao = movieDao;
+        this.countryService = countryService;
+        this.genreService = genreService;
+        this.reviewService = reviewService;
     }
 
     @Override
@@ -32,4 +39,12 @@ public class DefaultMovieService implements MovieService {
         return movieDao.getMoviesByGenre(genreId, requestSearchParam);
     }
 
+    @Override
+    public MovieDetailed getMovieById(int id) {
+        MovieDetailed movieDetailed = movieDao.getMovieById(id);
+        movieDetailed.setCountries(countryService.getCountriesByMovieId(id));
+        movieDetailed.setGenres(genreService.getGenresByMovieId(id));
+        movieDetailed.setReviews(reviewService.getReviewsByMovieId(id));
+        return movieDetailed;
+    }
 }
