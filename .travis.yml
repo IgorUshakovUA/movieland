@@ -5,5 +5,5 @@ addons:
     token:
       secure: "0c0c39fa0fa71750c5fd699a961552d201c6c1a7"
 script:
-  - mvn clean package
-  - sonar-scanner -X -Dsonar.language=java -Dsonar.projectKey=java-sonar-runner-simple -Dsonar.sources="movieland-entity/src/main/java,movieland-dao/src/main/java,movieland-dao-jdbc/src/main/java,movieland-service/src/main/java,movieland-service-default/src/main/java,movieland-web/src/main/java"
+  - mvn sonar:sonar -Dsonar.projectKey=movieland -Dsonar.organization=igorushakovua-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=0c0c39fa0fa71750c5fd699a961552d201c6c1a7
+
