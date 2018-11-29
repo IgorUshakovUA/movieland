@@ -146,13 +146,6 @@
                 <version>1.23</version>
             </dependency>
 
-            <!-- *** Http Client -->
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.6</version>
-            </dependency>
-
             <!-- *** Logging *** -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>

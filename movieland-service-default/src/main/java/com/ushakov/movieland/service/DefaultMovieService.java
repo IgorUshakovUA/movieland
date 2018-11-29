@@ -63,9 +63,7 @@ public class DefaultMovieService implements MovieService {
         movieDetailed.setGenres(genreService.getGenresByMovieId(id));
         movieDetailed.setReviews(reviewService.getReviewsByMovieId(id));
         if (requestSearchParam != null && requestSearchParam.getCurrency() != null) {
-            double value = movieDetailed.getPrice() / currencyService.getCurrencyRate(requestSearchParam.getCurrency());
-            value = Math.floor(value * 100) / 100;
-            movieDetailed.setPrice(value);
+            movieDetailed.setPrice(movieDetailed.getPrice() / currencyService.getCurrencyRate(requestSearchParam.getCurrency()));
         }
         return movieDetailed;
     }

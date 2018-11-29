@@ -12,3 +12,7 @@ my:
         capacity: 0
       pool:
         size: 1
+nbu:
+  rest:
+    url: https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json
+    cron: 0 5 16,18 * * MON-FRI
