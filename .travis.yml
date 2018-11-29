@@ -1,1 +1,8 @@
 language: java
+addons:
+  sonarcloud:
+    organization: "igorushakovua-github"
+    token:
+      secure: 0c0c39fa0fa71750c5fd699a961552d201c6c1a7
+script:
+  - sonar-scanner
