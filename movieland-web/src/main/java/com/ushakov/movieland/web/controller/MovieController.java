@@ -23,15 +23,22 @@ public class MovieController {
     @RequestMapping(path = "/v1/movie", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
         if (ratingOrder == null && priceOrder == null) {
-            return movieService.getAll(null);
+            return movieService.getAll();
         }
 
         return movieService.getAll(getRequestSearchParam(ratingOrder, priceOrder));
     }
 
     @RequestMapping(path = "/v1/movie/{movieId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public MovieDetailed getMovieById(@PathVariable int movieId) {
-        return movieService.getMovieById(movieId);
+    public MovieDetailed getMovieById(@PathVariable int movieId, @RequestParam(name = "currency", required = false) Currency currency) {
+
+        if (currency != null) {
+            RequestSearchParam requestSearchParam = new RequestSearchParam();
+            requestSearchParam.setCurrency(currency);
+            return movieService.getMovieById(movieId, requestSearchParam);
+        } else {
+            return movieService.getMovieById(movieId);
+        }
     }
 
     @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -42,7 +49,7 @@ public class MovieController {
     @RequestMapping(path = "/v1/movie/genre/{genreId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getMoviesByGenre(@PathVariable int genreId, @RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
         if (ratingOrder == null && priceOrder == null) {
-            return movieService.getMoviesByGenre(genreId, null);
+            return movieService.getMoviesByGenre(genreId);
         }
 
         return movieService.getMoviesByGenre(genreId, getRequestSearchParam(ratingOrder, priceOrder));

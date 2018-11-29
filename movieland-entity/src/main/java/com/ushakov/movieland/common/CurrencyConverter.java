@@ -5,22 +5,22 @@ import org.slf4j.LoggerFactory;
 
 import java.beans.PropertyEditorSupport;
 
-public class SortFieldConverter extends PropertyEditorSupport {
+public class CurrencyConverter extends PropertyEditorSupport {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void setAsText(String text) throws IllegalArgumentException {
 
         String capitalized = text.toUpperCase().trim();
-        SortField sortField;
+        Currency currency;
         try {
-            sortField = SortField.valueOf(capitalized);
+            currency = Currency.valueOf(capitalized);
         } catch (IllegalArgumentException e) {
             logger.warn("Wrong value was provided: {}", text);
 
-            sortField = null;
+            currency = null;
         }
 
-        setValue(sortField);
+        setValue(currency);
     }
 }

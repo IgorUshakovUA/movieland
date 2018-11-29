@@ -18,6 +18,12 @@
             <artifactId>movieland-service</artifactId>
         </dependency>
 
+        <!-- *** RestTemplate *** -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+
         <!-- *** spring anntations *** -->
         <dependency>
             <groupId>org.springframework</groupId>

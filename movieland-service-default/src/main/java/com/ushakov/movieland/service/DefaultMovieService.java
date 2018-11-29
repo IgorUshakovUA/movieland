@@ -15,13 +15,20 @@ public class DefaultMovieService implements MovieService {
     private CountryService countryService;
     private GenreService genreService;
     private ReviewService reviewService;
+    private CurrencyService currencyService;
 
     @Autowired
-    public DefaultMovieService(MovieDao movieDao, CountryService countryService, GenreService genreService, ReviewService reviewService) {
+    public DefaultMovieService(MovieDao movieDao, CountryService countryService, GenreService genreService, ReviewService reviewService, CurrencyService currencyService) {
         this.movieDao = movieDao;
         this.countryService = countryService;
         this.genreService = genreService;
         this.reviewService = reviewService;
+        this.currencyService = currencyService;
+    }
+
+    @Override
+    public List<Movie> getAll() {
+        return getAll(null);
     }
 
     @Override
@@ -35,16 +42,29 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
+    public List<Movie> getMoviesByGenre(int genreId) {
+        return getMoviesByGenre(genreId, null);
+    }
+
+    @Override
     public List<Movie> getMoviesByGenre(int genreId, RequestSearchParam requestSearchParam) {
         return movieDao.getMoviesByGenre(genreId, requestSearchParam);
     }
 
     @Override
     public MovieDetailed getMovieById(int id) {
+        return getMovieById(id, null);
+    }
+
+    @Override
+    public MovieDetailed getMovieById(int id, RequestSearchParam requestSearchParam) {
         MovieDetailed movieDetailed = movieDao.getMovieById(id);
         movieDetailed.setCountries(countryService.getCountriesByMovieId(id));
         movieDetailed.setGenres(genreService.getGenresByMovieId(id));
         movieDetailed.setReviews(reviewService.getReviewsByMovieId(id));
+        if (requestSearchParam != null && requestSearchParam.getCurrency() != null) {
+            movieDetailed.setPrice(movieDetailed.getPrice() / currencyService.getCurrencyRate(requestSearchParam.getCurrency()));
+        }
         return movieDetailed;
     }
 }

@@ -18,14 +18,7 @@
             <artifactId>movieland-dao</artifactId>
         </dependency>
 
-        <!-- *** sl4fj *** -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-
-        <!-- *** spring anntations *** -->
+         <!-- *** spring anntations *** -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>

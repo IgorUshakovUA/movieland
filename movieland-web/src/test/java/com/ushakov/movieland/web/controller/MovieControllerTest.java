@@ -76,7 +76,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         second.setPicturePath("path2");
 
         // When
-        when(movieService.getAll(null)).thenReturn(Arrays.asList(first, second));
+        when(movieService.getAll()).thenReturn(Arrays.asList(first, second));
 
         // Then
         mockMvc.perform(get("/v1/movie"))
@@ -98,7 +98,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[1].price", equalTo(134.67)))
                 .andExpect(jsonPath("$[1].picturePath", equalTo("path2")));
 
-        verify(movieService, times(1)).getAll(null);
+        verify(movieService, times(1)).getAll();
         verifyNoMoreInteractions(movieService);
     }
 
@@ -346,7 +346,7 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         third.setPicturePath("path3");
 
         // When
-        when(movieService.getMoviesByGenre(1, null)).thenReturn(Arrays.asList(first, second, third));
+        when(movieService.getMoviesByGenre(1)).thenReturn(Arrays.asList(first, second, third));
 
         // Then
         mockMvc.perform(get("/v1/movie/genre/1"))

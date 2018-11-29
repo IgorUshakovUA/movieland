@@ -35,6 +35,12 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
+        <!-- *** Yaml *** -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+        </dependency>
+
         <!-- *** Logging *** -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
