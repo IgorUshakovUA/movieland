@@ -1,5 +1,7 @@
 package com.ushakov.movieland.entity;
 
+import java.util.Objects;
+
 public class Movie {
     private int id;
     private String nameRussian;
@@ -94,5 +96,10 @@ public class Movie {
                 this.nameRussian != null && this.nameRussian.equals(movie.nameRussian) &&
                 this.yearOfRelease == movie.yearOfRelease && (this.rating - movie.rating) < 1e-3 &&
                 (this.price - movie.price) < 1e-3 && this.picturePath != null && this.picturePath.equals(movie.picturePath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, rating, price, picturePath);
     }
 }

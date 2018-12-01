@@ -92,7 +92,7 @@ public class JdbcMovieDao implements MovieDao {
     public MovieDetailed getMovieById(int id) {
         MovieDetailed movieDetailed = jdbcTemplate.queryForObject(GET_MOVIE_BY_ID_SQL, MOVIE_DETAILED_ROW_MAPPER, id);
 
-        logger.debug("Movie: ", movieDetailed);
+        logger.debug("Movie: {}", movieDetailed);
 
         return movieDetailed;
     }

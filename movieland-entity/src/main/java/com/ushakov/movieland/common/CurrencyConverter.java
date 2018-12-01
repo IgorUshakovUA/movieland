@@ -9,7 +9,7 @@ public class CurrencyConverter extends PropertyEditorSupport {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public void setAsText(String text) throws IllegalArgumentException {
+    public void setAsText(String text) {
 
         String capitalized = text.toUpperCase().trim();
         Currency currency;
