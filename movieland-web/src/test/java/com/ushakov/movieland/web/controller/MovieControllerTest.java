@@ -6,11 +6,15 @@ import com.ushakov.movieland.common.SortField;
 import com.ushakov.movieland.common.SortType;
 import com.ushakov.movieland.entity.*;
 import com.ushakov.movieland.service.MovieService;
+import com.ushakov.movieland.web.configuration.AppInitializer;
+import com.ushakov.movieland.web.configuration.TestConfiguration;
+import com.ushakov.movieland.web.configuration.WebConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -32,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/applicationContext.xml", "file:src/main/webapp/WEB-INF/dispatcherServlet-servlet.xml"})
+@ContextConfiguration(classes = {WebConfiguration.class, TestConfiguration.class})
 @WebAppConfiguration
 public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
     private MockMvc mockMvc;

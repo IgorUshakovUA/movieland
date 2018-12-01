@@ -9,9 +9,9 @@ my:
         size: 1
     executor:
       queue:
-        capacity: 0
+        capacity: 10
       pool:
-        size: 1
+        size: 5
 nbu:
   rest:
     url: https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json
