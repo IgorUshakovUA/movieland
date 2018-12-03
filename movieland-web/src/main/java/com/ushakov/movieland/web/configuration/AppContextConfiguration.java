@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
 import java.beans.PropertyEditor;
@@ -23,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableWebMvc
 @ComponentScan(basePackages = {"com.ushakov.movieland.service", "com.ushakov.movieland.dao"})
 @EnableAsync
 @EnableScheduling
