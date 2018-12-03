@@ -2,7 +2,6 @@ package com.ushakov.movieland.web.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -13,7 +12,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan(basePackages = {"com.ushakov.movieland.web.controller"})
 public class TestConfiguration {
     @Value("classpath:db/schema.sql")
     private Resource schemaScript;

@@ -1,11 +1,10 @@
 package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.entity.Country;
-import com.ushakov.movieland.entity.Genre;
 import com.ushakov.movieland.service.CountryService;
-import com.ushakov.movieland.service.GenreService;
+import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
-import com.ushakov.movieland.web.configuration.WebConfiguration;
+import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +22,13 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebConfiguration.class, TestConfiguration.class})
+@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, TestConfiguration.class})
 @WebAppConfiguration
 public class CountryControllerTest {
     private MockMvc mockMvc;

@@ -27,7 +27,7 @@ import java.util.Map;
 @ComponentScan(basePackages = {"com.ushakov.movieland.service", "com.ushakov.movieland.dao"})
 @EnableAsync
 @EnableScheduling
-public class WebConfiguration {
+public class AppContextConfiguration {
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
         PropertySourcesPlaceholderConfigurer bean = new PropertySourcesPlaceholderConfigurer();
