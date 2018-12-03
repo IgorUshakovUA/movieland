@@ -2,6 +2,7 @@ package com.ushakov.movieland.web.configuration;
 
 import com.ushakov.movieland.common.*;
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.context.annotation.*;
@@ -26,6 +27,7 @@ import java.util.Map;
 @EnableAsync
 @EnableScheduling
 public class AppContextConfiguration {
+
     @Bean
     public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
         PropertySourcesPlaceholderConfigurer bean = new PropertySourcesPlaceholderConfigurer();
@@ -39,17 +41,16 @@ public class AppContextConfiguration {
     }
 
     @Bean
-    public AppProperties appProperties() {
-        return new AppProperties();
-    }
-
-    @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(@Value("${jdbc.driver}") String jdbcDriver,
+                                 @Value("${jdbc.url}") String jdbcUrl,
+                                 @Value("${jdbc.username}") String jdbcUsername,
+                                 @Value("${jdbc.password}") String jdbcPassword
+    ) {
         BasicDataSource basicDataSource = new BasicDataSource();
-        basicDataSource.setDriverClassName("org.postgresql.Driver");
-        basicDataSource.setUrl("jdbc:postgresql://127.0.0.1:5432/movieland");
-        basicDataSource.setUsername("app_owner");
-        basicDataSource.setPassword("app_owner");
+        basicDataSource.setDriverClassName(jdbcDriver);
+        basicDataSource.setUrl(jdbcUrl);
+        basicDataSource.setUsername(jdbcUsername);
+        basicDataSource.setPassword(jdbcPassword);
 
         return basicDataSource;
     }
@@ -79,25 +80,23 @@ public class AppContextConfiguration {
     }
 
     @Bean
-    public TaskExecutor taskExecutor() {
+    public TaskExecutor taskExecutor(@Value("${my.job.executor.queue.capacity}") int executorQueueCapacity,
+                                     @Value("${my.job.executor.pool.size}") int executorPoolSize) {
+
         ThreadPoolTaskExecutor bean = new ThreadPoolTaskExecutor();
 
-        AppProperties appProperties = appProperties();
-
-        bean.setCorePoolSize(appProperties.getExecutorPoolSize());
-        bean.setMaxPoolSize(appProperties.getExecutorPoolSize() * 2);
-        bean.setQueueCapacity(appProperties.getExecutorQueueCapacity());
+        bean.setCorePoolSize(executorPoolSize);
+        bean.setMaxPoolSize(executorPoolSize * 2);
+        bean.setQueueCapacity(executorQueueCapacity);
 
         return bean;
     }
 
     @Bean
-    public TaskScheduler taskScheduler() {
+    public TaskScheduler taskScheduler(@Value("${my.job.scheduler.pool.size}") int schedulerPoolSize) {
         ThreadPoolTaskScheduler bean = new ThreadPoolTaskScheduler();
 
-        AppProperties appProperties = appProperties();
-
-        bean.setPoolSize(appProperties.getSchedulerPoolSize());
+        bean.setPoolSize(schedulerPoolSize);
 
         return bean;
     }
