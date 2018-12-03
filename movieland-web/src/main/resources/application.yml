@@ -9,10 +9,15 @@ my:
         size: 1
     executor:
       queue:
-        capacity: 0
+        capacity: 10
       pool:
-        size: 1
+        size: 5
 nbu:
   rest:
     url: https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json
     cron: 0 5 16,18 * * MON-FRI
+jdbc:
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://127.0.0.1:5432/movieland
+  username: app_owner
+  password: app_owner
