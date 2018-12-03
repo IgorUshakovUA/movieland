@@ -57,16 +57,16 @@ INSERT INTO review(id, movieId, userId, comment) VALUES(30, 22, 9, 'Конечн
 INSERT INTO review(id, movieId, userId, comment) VALUES(31, 12, 9, 'В итоге мы имеем отличный представитель своего жанра, который прошёл проверку временем и до сих пор отлично смотрится, несмотря на классический сюжет');
 INSERT INTO review(id, movieId, userId, comment) VALUES(32, 13, 10, 'Скажу только одно — как я жалею, что не посмотрела его раньше!');
 
-INSERT INTO app_user (id, name, email, nickName) VALUES (1, 'Рональд Рейнольдс', 'ronald.reynolds66@example.com', 'paco');
-INSERT INTO app_user (id, name, email, nickName) VALUES (2, 'Дарлин Эдвардс', 'darlene.edwards15@example.com', 'bricks');
-INSERT INTO app_user (id, name, email, nickName) VALUES (3, 'Габриэль Джексон', 'gabriel.jackson91@example.com', 'hjkl');
-INSERT INTO app_user (id, name, email, nickName) VALUES (4, 'Дэрил Брайант', 'daryl.bryant94@example.com', 'exodus');
-INSERT INTO app_user (id, name, email, nickName) VALUES (5, 'Нил Паркер', 'neil.parker43@example.com', '878787');
-INSERT INTO app_user (id, name, email, nickName) VALUES (6, 'Трэвис Райт', 'travis.wright36@example.com', 'smart');
-INSERT INTO app_user (id, name, email, nickName) VALUES (7, 'Амелия Кэннеди', 'amelia.kennedy58@example.com', 'beaker');
-INSERT INTO app_user (id, name, email, nickName) VALUES (8, 'Айда Дэвис', 'ida.davis80@example.com', 'pepsi1');
-INSERT INTO app_user (id, name, email, nickName) VALUES (9, 'Джесси Паттерсон', 'jessie.patterson68@example.com', 'tommy');
-INSERT INTO app_user (id, name, email, nickName) VALUES (10, 'Деннис Крейг', 'dennis.craig82@example.com', 'coldbeer');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (1, 'Рональд Рейнольдс', 'ronald.reynolds66@example.com', 'paco', '3210aa1edc05ddc15008f8713366aa57', '9f046d4f-d63d-49b5-99de-c053ce7ea19b');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (2, 'Дарлин Эдвардс', 'darlene.edwards15@example.com', 'bricks', '0626376b7b6b4953e3849a65fd59d0a9', 'd8dc4f20-4826-452a-addc-f36ab808c8d7');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (3, 'Габриэль Джексон', 'gabriel.jackson91@example.com', 'hjkl', '1e39097d3beb78b9dbc9df7002eb0503', '6842c715-75a6-486f-b6d3-191bdd9d044d');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (4, 'Дэрил Брайант', 'daryl.bryant94@example.com', 'exodus', '8274c90f95f974a9d199f1e44c3e2efb', '3042bc46-a3dd-47d0-b11d-e8962ac907cd');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (5, 'Нил Паркер', 'neil.parker43@example.com', '878787', '6e9285451fdf11aa7efe80f095eb649c', '3f15064d-a529-4bf0-af29-22e5bce63606');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (6, 'Трэвис Райт', 'travis.wright36@example.com', 'smart', 'fce57837ad2d5001db640b2ab7c43ff8', 'e2f7933d-2363-4d33-8d6a-53e87837b8e0');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (7, 'Амелия Кэннеди', 'amelia.kennedy58@example.com', 'beaker', 'cd31d45e0aebc219e414aa68c677bdea', '8b1508fa-44de-4fc1-957c-25dfb2bbe528');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (8, 'Айда Дэвис', 'ida.davis80@example.com', 'pepsi1', '51b4cb8a583e19833bba5004238bab39', '39594757-16f9-4fb8-bc8a-fb9d4450dba5');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (9, 'Джесси Паттерсон', 'jessie.patterson68@example.com', 'tommy', 'c36e69ef3cbb1bbc07a1c637e9c72b9e', '36d82b5e-5301-4794-85f9-c2b4078e8559');
+INSERT INTO app_user (id, name, email, nickName, password, salt) VALUES (10, 'Деннис Крейг', 'dennis.craig82@example.com', 'coldbeer', '632519d3de3a6209ecb040738ed49374', '89bfdf92-d26d-457b-ac8b-85f05b0ea370');
 
 INSERT INTO genre(id, name) VALUES(1, 'драма');
 INSERT INTO genre(id, name) VALUES(2, 'криминал');

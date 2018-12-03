@@ -21,3 +21,7 @@ jdbc:
   url: jdbc:postgresql://127.0.0.1:5432/movieland
   username: app_owner
   password: app_owner
+security:
+  time-to-live:
+    hours: 2
+  cron: 0 30 * * * *
