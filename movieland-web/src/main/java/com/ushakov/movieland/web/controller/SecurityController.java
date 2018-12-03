@@ -30,7 +30,7 @@ public class SecurityController {
         return securityToken;
     }
 
-    @DeleteMapping(value = "/v1/logout")
+    @DeleteMapping(value = "/v1/logout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public SecurityToken logout(@RequestParam(name = "uuid") String uuid) {
         SecurityToken securityToken = securityService.logout(uuid);
 
