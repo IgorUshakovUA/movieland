@@ -3,6 +3,8 @@ CREATE TABLE app_user (
 , name                  VARCHAR(128)
 , email                 VARCHAR(128)
 , nickName              VARCHAR(128)
+, password              VARCHAR(32)
+, salt                  VARCHAR(36)
 );
 
 CREATE TABLE poster (
