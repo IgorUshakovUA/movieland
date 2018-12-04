@@ -5,10 +5,7 @@ import com.ushakov.movieland.common.SecurityToken;
 import com.ushakov.movieland.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class SecurityController {
@@ -31,7 +28,7 @@ public class SecurityController {
     }
 
     @DeleteMapping(value = "/v1/logout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public SecurityToken logout(@RequestParam(name = "uuid") String uuid) {
+    public SecurityToken logout(@RequestHeader(name = "uuid") String uuid) {
         SecurityToken securityToken = securityService.logout(uuid);
 
         if (securityToken == null) {

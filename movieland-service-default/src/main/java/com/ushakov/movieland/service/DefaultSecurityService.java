@@ -67,7 +67,7 @@ public class DefaultSecurityService implements SecurityService {
         }
     }
 
-    public Map<String, SecurityItem> getSecurityItems() {
+    Map<String, SecurityItem> getSecurityItems() {
         return  Collections.unmodifiableMap( securityItems);
     }
 }

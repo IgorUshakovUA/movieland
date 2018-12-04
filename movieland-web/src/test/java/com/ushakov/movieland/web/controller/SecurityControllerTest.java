@@ -100,7 +100,8 @@ public class SecurityControllerTest {
         when(securityService.logout(any(String.class))).thenReturn(expectedSecurityTocken);
 
         // Then
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/v1/logout").param("uuid", expectedSecurityTocken.getUuid());
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/v1/logout")
+                .header("uuid", expectedSecurityTocken.getUuid());
 
         mockMvc.perform(builder)
                 .andExpect(status().isOk())
