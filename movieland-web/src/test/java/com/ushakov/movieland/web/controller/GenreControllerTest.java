@@ -1,8 +1,13 @@
 package com.ushakov.movieland.web.controller;
 
+import com.ushakov.movieland.common.Credentials;
+import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.entity.Genre;
+import com.ushakov.movieland.service.DefaultSecurityService;
 import com.ushakov.movieland.service.GenreService;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
+import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
 import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import org.junit.Before;
@@ -16,10 +21,13 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -30,9 +38,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, TestConfiguration.class})
+@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, InterceptorConfig.class, TestConfiguration.class})
 @WebAppConfiguration
 public class GenreControllerTest extends AbstractJUnit4SpringContextTests {
+    private static final String USER_UUID = UUID.randomUUID().toString();
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -43,9 +53,20 @@ public class GenreControllerTest extends AbstractJUnit4SpringContextTests {
 
     private GenreService genreService = mock(GenreService.class);
 
+    @Autowired
+    private DefaultSecurityService securityService;
+
+    private SecurityDao securityDao = mock(SecurityDao.class);
+
     @Before
     public void before() {
         genreController.setGenreService(genreService);
+
+        securityService.setSecurityDao(securityDao);
+
+        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName"));
+
+        securityService.logon(new Credentials("my@email.com","password"));
 
         Mockito.reset(genreService);
 
@@ -63,7 +84,10 @@ public class GenreControllerTest extends AbstractJUnit4SpringContextTests {
         when(genreService.getAll()).thenReturn(Arrays.asList(first, second));
 
         // Then
-        mockMvc.perform(get("/v1/genre"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/genre")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))

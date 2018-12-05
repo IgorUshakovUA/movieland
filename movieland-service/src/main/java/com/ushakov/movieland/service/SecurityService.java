@@ -7,4 +7,5 @@ public interface SecurityService {
     SecurityToken logon(Credentials credentials);
     SecurityToken logout(String uuid);
     boolean isLoggedOn(String uuid);
+    String getEmail(String uuid);
 }

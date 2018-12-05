@@ -32,7 +32,7 @@ public class DefaultSecurityService implements SecurityService {
     @Override
     public SecurityToken logon(Credentials credentials) {
         SecurityToken securityToken = securityDao.logon(credentials);
-        SecurityItem securityItem = new SecurityItem(securityToken);
+        SecurityItem securityItem = new SecurityItem(securityToken, credentials);
         securityItems.put(securityItem.getUuid(), securityItem);
 
         return securityToken;
@@ -41,7 +41,7 @@ public class DefaultSecurityService implements SecurityService {
     @Override
     public SecurityToken logout(String uuid) {
         SecurityItem securityItem = securityItems.get(uuid);
-        if(securityItem != null) {
+        if (securityItem != null) {
             securityItem.setAlive(false);
             return securityItem.getSecurityToken();
         }
@@ -56,6 +56,21 @@ public class DefaultSecurityService implements SecurityService {
         return securityItem != null && securityItem.isAlive();
     }
 
+    @Override
+    public String getEmail(String uuid) {
+        SecurityItem securityItem = securityItems.get(uuid);
+
+        if (securityItem == null || !securityItem.isAlive()) {
+            return null;
+        }
+
+        return securityItem.getCredentials().getEmail();
+    }
+
+    public void setSecurityDao(SecurityDao securityDao) {
+        this.securityDao = securityDao;
+    }
+
     @Scheduled(cron = "${security.cron}")
     public void removeExpiredSecurityTokens() {
         Iterator<SecurityItem> itemIterator = securityItems.values().iterator();
@@ -68,6 +83,6 @@ public class DefaultSecurityService implements SecurityService {
     }
 
     Map<String, SecurityItem> getSecurityItems() {
-        return  Collections.unmodifiableMap( securityItems);
+        return Collections.unmodifiableMap(securityItems);
     }
 }

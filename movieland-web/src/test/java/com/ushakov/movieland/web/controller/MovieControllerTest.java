@@ -1,12 +1,14 @@
 package com.ushakov.movieland.web.controller;
 
 
-import com.ushakov.movieland.common.RequestSearchParam;
-import com.ushakov.movieland.common.SortField;
-import com.ushakov.movieland.common.SortType;
+import com.ushakov.movieland.common.*;
+import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.entity.*;
+import com.ushakov.movieland.service.DefaultSecurityService;
 import com.ushakov.movieland.service.MovieService;
+import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
+import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
 import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import org.junit.Before;
@@ -20,10 +22,13 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -35,9 +40,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, TestConfiguration.class})
+@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, InterceptorConfig.class, TestConfiguration.class})
 @WebAppConfiguration
 public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
+    private static final String USER_UUID = UUID.randomUUID().toString();
     private MockMvc mockMvc;
 
     @Autowired
@@ -48,9 +54,20 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
 
     private MovieService movieService = mock(MovieService.class);
 
+    @Autowired
+    private DefaultSecurityService securityService;
+
+    private SecurityDao securityDao = mock(SecurityDao.class);
+
     @Before
     public void setUp() {
         movieController.setMovieService(movieService);
+
+        securityService.setSecurityDao(securityDao);
+
+        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName"));
+
+        securityService.logon(new Credentials("my@email.com","password"));
 
         Mockito.reset(movieService);
 
@@ -82,7 +99,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getAll()).thenReturn(Arrays.asList(first, second));
 
         // Then
-        mockMvc.perform(get("/v1/movie"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -133,7 +153,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getMovieById(1)).thenReturn(expectedMovieDetailed);
 
         // Then
-        mockMvc.perform(get("/v1/movie/1"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/1")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$.id", equalTo(1)))
@@ -188,7 +211,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getAll(any(RequestSearchParam.class))).thenReturn(Arrays.asList(second, first));
 
         // Then
-        mockMvc.perform(get("/v1/movie?rating=desc"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie?rating=desc")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -237,7 +263,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getAll(any(RequestSearchParam.class))).thenReturn(Arrays.asList(second, first));
 
         // Then
-        mockMvc.perform(get("/v1/movie?price=asc"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie?price=asc")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -291,7 +320,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getThreeRandomMovies()).thenReturn(Arrays.asList(first, second, third));
 
         // Then
-        mockMvc.perform(get("/v1/movie/random"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/random")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -352,7 +384,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getMoviesByGenre(1)).thenReturn(Arrays.asList(first, second, third));
 
         // Then
-        mockMvc.perform(get("/v1/movie/genre/1"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/genre/1")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -417,7 +452,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getMoviesByGenre(any(Integer.class), any(RequestSearchParam.class))).thenReturn(Arrays.asList(first, second, third));
 
         // Then
-        mockMvc.perform(get("/v1/movie/genre/1?price=desc"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/genre/1?price=desc")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -482,7 +520,10 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         when(movieService.getMoviesByGenre(any(Integer.class), any(RequestSearchParam.class))).thenReturn(Arrays.asList(first, second, third));
 
         // Then
-        mockMvc.perform(get("/v1/movie/genre/1?rating=desc"))
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/genre/1?rating=desc")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(jsonPath("$", hasSize(3)))

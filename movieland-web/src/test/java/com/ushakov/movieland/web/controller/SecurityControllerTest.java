@@ -6,6 +6,7 @@ import com.ushakov.movieland.common.SecurityToken;
 import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
+import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, TestConfiguration.class})
+@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, InterceptorConfig.class, TestConfiguration.class})
 @WebAppConfiguration
 public class SecurityControllerTest {
     private MockMvc mockMvc;
@@ -92,7 +93,7 @@ public class SecurityControllerTest {
     }
 
     @Test
-    public void testLogout() throws  Exception {
+    public void testLogout() throws Exception {
         // Prepare
         SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname");
 
@@ -111,7 +112,7 @@ public class SecurityControllerTest {
     }
 
     @Test
-    public void testLogoutFails() throws  Exception {
+    public void testLogoutFails() throws Exception {
         // When
         when(securityService.logout(any(String.class))).thenReturn(null);
 

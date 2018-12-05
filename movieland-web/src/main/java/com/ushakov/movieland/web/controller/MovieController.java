@@ -4,6 +4,8 @@ import com.ushakov.movieland.common.*;
 import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.entity.MovieDetailed;
 import com.ushakov.movieland.service.MovieService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import java.util.List;
 
 @RestController
 public class MovieController {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private MovieService movieService;
 
     @Autowired
@@ -22,6 +26,8 @@ public class MovieController {
 
     @RequestMapping(path = "/v1/movie", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
+        logger.info("Get all movies.");
+
         if (ratingOrder == null && priceOrder == null) {
             return movieService.getAll();
         }
@@ -31,6 +37,7 @@ public class MovieController {
 
     @RequestMapping(path = "/v1/movie/{movieId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public MovieDetailed getMovieById(@PathVariable int movieId, @RequestParam(name = "currency", required = false) Currency currency) {
+        logger.info("Get a movie by id: {}", movieId);
 
         if (currency != null) {
             RequestSearchParam requestSearchParam = new RequestSearchParam();
@@ -43,11 +50,15 @@ public class MovieController {
 
     @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getThreeRandomMovies() {
+        logger.info("Get three random movies.");
+
         return movieService.getThreeRandomMovies();
     }
 
     @RequestMapping(path = "/v1/movie/genre/{genreId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getMoviesByGenre(@PathVariable int genreId, @RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
+        logger.info("Get movies by genreId: {}.", genreId);
+
         if (ratingOrder == null && priceOrder == null) {
             return movieService.getMoviesByGenre(genreId);
         }
