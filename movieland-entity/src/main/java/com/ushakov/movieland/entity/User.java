@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class User implements Entity {
+public class User {
     private int id;
     private String nickname;
 

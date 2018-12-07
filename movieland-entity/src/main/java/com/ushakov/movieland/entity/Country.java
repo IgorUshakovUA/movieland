@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Country implements Entity {
+public class Country {
     private int id;
     private String name;
 

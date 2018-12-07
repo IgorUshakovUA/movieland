@@ -73,52 +73,40 @@ public class DefaultMovieService implements MovieService {
     public MovieDetailed getMovieById(int id, RequestSearchParam requestSearchParam) {
         MovieDetailed movieDetailed = movieDao.getMovieById(id);
 
-        List<EnrichCallable<List<Entity>>> callableList = Arrays.asList(
+        List<EnrichCallable<List<Object>>> callableList = Arrays.asList(
                 new EnrichCallable(id, countryService::getCountriesByMovieId),
                 new EnrichCallable(id, genreService::getGenresByMovieId),
                 new EnrichCallable(id, reviewService::getReviewsByMovieId));
 
         try {
 
-            List<Future<List<Entity>>> futureList = executorService.invokeAll(callableList, executorTimeoutMillis, TimeUnit.MILLISECONDS);
+            List<Future<List<Object>>> futureList = executorService.invokeAll(callableList, executorTimeoutMillis, TimeUnit.MILLISECONDS);
 
-            Future<List<Entity>> countryFuture = futureList.get(0);
+            Future<List<Object>> countryFuture = futureList.get(0);
             if (countryFuture.isDone()) {
                 try {
                     movieDetailed.setCountries(convertEntityList(countryFuture.get()));
                 } catch (ExecutionException e) {
-                    logger.warn("Cannot enrich countries for movieId: {}, because an exception happened:\n {}", id, e);
+                    logger.warn("Cannot enrich countries for movieId: {}, because an exception happened: ", id, e);
                 }
-            } else {
-                countryFuture.cancel(true);
-
-                logger.warn("Cannot enrich countries for movieId: {}, because timeout happened.", id);
             }
 
-            Future<List<Entity>> genresFuture = futureList.get(1);
+            Future<List<Object>> genresFuture = futureList.get(1);
             if (genresFuture.isDone()) {
                 try {
                     movieDetailed.setGenres(convertEntityList(genresFuture.get()));
                 } catch (ExecutionException e) {
-                    logger.warn("Cannot enrich genres for movieId: {}, because an exception happened:\n {}", id, e);
+                    logger.warn("Cannot enrich genres for movieId: {}, because an exception happened: ", id, e);
                 }
-            } else {
-                genresFuture.cancel(true);
-
-                logger.warn("Cannot enrich genres for movieId: {}, because timeout happened.", id);
             }
 
-            Future<List<Entity>> reviewFuture = futureList.get(2);
+            Future<List<Object>> reviewFuture = futureList.get(2);
             if (reviewFuture.isDone()) {
                 try {
                     movieDetailed.setReviews(convertEntityList(reviewFuture.get()));
                 } catch (ExecutionException e) {
-                    logger.warn("Cannot enrich reviews for movieId: {}, because an exception happened:\n {}", id, e);
+                    logger.warn("Cannot enrich reviews for movieId: {}, because an exception happened: ", id, e);
                 }
-            } else {
-                reviewFuture.cancel(true);
-
-                logger.warn("Cannot enrich reviews for movieId: {}, because timeout happened.", id);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -131,10 +119,10 @@ public class DefaultMovieService implements MovieService {
         return movieDetailed;
     }
 
-    private static <T> List<T> convertEntityList(List<Entity> entityList) {
+    private static <T> List<T> convertEntityList(List<Object> entityList) {
         List<T> tList = new ArrayList<>();
 
-        for (Entity entity : entityList) {
+        for (Object entity : entityList) {
             tList.add((T) entity);
         }
 

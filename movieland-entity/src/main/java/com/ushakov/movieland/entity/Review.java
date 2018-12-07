@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Review implements Entity {
+public class Review {
     private int id;
     private User user;
     private String text;

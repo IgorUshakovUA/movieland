@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Genre implements Entity {
+public class Genre {
     private int id;
     private String name;
 
