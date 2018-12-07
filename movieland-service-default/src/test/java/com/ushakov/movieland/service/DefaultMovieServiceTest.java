@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -59,7 +60,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         // When
         when(movieDao.getAll(null)).thenReturn(expectedMovieList);
@@ -115,7 +116,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.ASC);
@@ -175,7 +176,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.DESC);
@@ -235,7 +236,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         // When
         when(movieDao.getThreeRandomMovies()).thenReturn(expectedMovieList);
@@ -291,7 +292,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         // When
         when(movieDao.getMoviesByGenre(1, null)).thenReturn(expectedMovieList);
@@ -347,7 +348,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.ASC);
@@ -407,7 +408,7 @@ public class DefaultMovieServiceTest {
         movie3.setPicturePath("path3");
         expectedMovieList.add(movie3);
 
-        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService);
+        MovieService movieService = new DefaultMovieService(movieDao, countryService, genreService, reviewService, currencyService, Executors.newCachedThreadPool());
 
         RequestSearchParam requestSearchParam = new RequestSearchParam();
         requestSearchParam.setSortType(SortType.DESC);

@@ -6,7 +6,9 @@ import com.ushakov.movieland.common.SecurityToken;
 import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
+import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
+import com.ushakov.movieland.web.interceptor.UserRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +32,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, TestConfiguration.class})
+@ContextConfiguration(classes = {AppContextConfiguration.class, DispatcherContextConfiguration.class, InterceptorConfig.class, TestConfiguration.class})
 @WebAppConfiguration
 public class SecurityControllerTest {
     private MockMvc mockMvc;
@@ -43,9 +45,14 @@ public class SecurityControllerTest {
 
     private SecurityService securityService = mock(SecurityService.class);
 
+    @Autowired
+    private UserRequestInterceptor userRequestInterceptor;
+
     @Before
     public void before() {
         securityControllerr.setSecurityService(securityService);
+
+        userRequestInterceptor.setSecurityService(securityService);
 
         Mockito.reset(securityService);
 
@@ -92,11 +99,12 @@ public class SecurityControllerTest {
     }
 
     @Test
-    public void testLogout() throws  Exception {
+    public void testLogout() throws Exception {
         // Prepare
         SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname");
 
         // When
+        when(securityService.getEmail(any(String.class))).thenReturn("my@email.com");
         when(securityService.logout(any(String.class))).thenReturn(expectedSecurityTocken);
 
         // Then
@@ -111,12 +119,14 @@ public class SecurityControllerTest {
     }
 
     @Test
-    public void testLogoutFails() throws  Exception {
+    public void testLogoutFails() throws Exception {
         // When
         when(securityService.logout(any(String.class))).thenReturn(null);
+        when(securityService.getEmail(any(String.class))).thenReturn("my@email.com");
 
         // Then
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/v1/logout").param("uuid", "wrong value");
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.delete("/v1/logout")
+                .header("uuid", "wrong value");
 
         mockMvc.perform(builder)
                 .andExpect(status().is4xxClientError());

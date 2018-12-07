@@ -5,17 +5,23 @@ import java.util.Objects;
 
 public class SecurityItem {
     private SecurityToken securityToken;
+    private Credentials credentials;
     private LocalDateTime created;
     private volatile boolean isAlive;
 
-    public SecurityItem(SecurityToken securityToken) {
+    public SecurityItem(SecurityToken securityToken, Credentials credentials) {
         this.securityToken = securityToken;
+        this.credentials = credentials;
         created = LocalDateTime.now();
         isAlive = true;
     }
 
     public SecurityToken getSecurityToken() {
         return securityToken;
+    }
+
+    public Credentials getCredentials() {
+        return credentials;
     }
 
     public LocalDateTime getCreated() {
