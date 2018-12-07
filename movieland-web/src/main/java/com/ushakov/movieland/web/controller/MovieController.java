@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 @RestController
 public class MovieController {
@@ -20,7 +21,7 @@ public class MovieController {
     private MovieService movieService;
 
     @Autowired
-    public MovieController(MovieService movieService) {
+    public MovieController(MovieService movieService, ExecutorService executorService) {
         this.movieService = movieService;
     }
 
