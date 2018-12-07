@@ -1,19 +1,24 @@
 package com.ushakov.movieland.service;
 
+import com.ushakov.movieland.callable.EnrichCallable;
 import com.ushakov.movieland.common.RequestSearchParam;
 import com.ushakov.movieland.dao.MovieDao;
 import com.ushakov.movieland.entity.*;
-import com.ushakov.movieland.futuretask.EnrichFutureTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 
 @Service
 public class DefaultMovieService implements MovieService {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private MovieDao movieDao;
     private CountryService countryService;
     private GenreService genreService;
@@ -23,8 +28,6 @@ public class DefaultMovieService implements MovieService {
 
     @Value("${executor.timeout-millis}")
     private int executorTimeoutMillis = 5000;
-    @Value("${executor.sleep-millis}")
-    private int executorSleepMillis = 50;
 
     @Autowired
     public DefaultMovieService(MovieDao movieDao, CountryService countryService, GenreService genreService, ReviewService reviewService, CurrencyService currencyService, ExecutorService executorService) {
@@ -70,55 +73,55 @@ public class DefaultMovieService implements MovieService {
     public MovieDetailed getMovieById(int id, RequestSearchParam requestSearchParam) {
         MovieDetailed movieDetailed = movieDao.getMovieById(id);
 
-        EnrichFutureTask<List<Country>> countriesFutureTask = new EnrichFutureTask<>(id, countryService::getCountriesByMovieId);
-        EnrichFutureTask<List<Genre>> genresFutureTask = new EnrichFutureTask<>(id, genreService::getGenresByMovieId);
-        EnrichFutureTask<List<Review>> reviewesFutureTask = new EnrichFutureTask<>(id, reviewService::getReviewsByMovieId);
+        List<EnrichCallable<List<Entity>>> callableList = Arrays.asList(
+                new EnrichCallable(id, countryService::getCountriesByMovieId),
+                new EnrichCallable(id, genreService::getGenresByMovieId),
+                new EnrichCallable(id, reviewService::getReviewsByMovieId));
 
-        executorService.submit(countriesFutureTask);
-        executorService.submit(genresFutureTask);
-        executorService.submit(reviewesFutureTask);
+        try {
 
-        int waitTime = 0;
-        boolean isCountriesEnriched = false;
-        boolean isGenresEnriched = false;
-        boolean isReviewesEnriched = false;
+            List<Future<List<Entity>>> futureList = executorService.invokeAll(callableList, executorTimeoutMillis, TimeUnit.MILLISECONDS);
 
-        while (waitTime < executorTimeoutMillis && (!isCountriesEnriched || !isGenresEnriched || !isReviewesEnriched)) {
-            try {
-                Thread.sleep(executorTimeoutMillis);
-
-                waitTime += executorSleepMillis;
-
-                if(!isCountriesEnriched && countriesFutureTask.isDone()) {
-                    isCountriesEnriched = true;
-                    movieDetailed.setCountries(countriesFutureTask.get());
+            Future<List<Entity>> countryFuture = futureList.get(0);
+            if (countryFuture.isDone()) {
+                try {
+                    movieDetailed.setCountries(convertEntityList(countryFuture.get()));
+                } catch (ExecutionException e) {
+                    logger.warn("Cannot enrich countries for movieId: {}, because an exception happened:\n {}", id, e);
                 }
+            } else {
+                countryFuture.cancel(true);
 
-                if(!isGenresEnriched && genresFutureTask.isDone()) {
-                    isGenresEnriched = true;
-                    movieDetailed.setGenres(genresFutureTask.get());
-                }
-
-                if(!isReviewesEnriched && reviewesFutureTask.isDone()) {
-                    isReviewesEnriched = true;
-                    movieDetailed.setReviews(reviewesFutureTask.get());
-                }
-
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
+                logger.warn("Cannot enrich countries for movieId: {}, because timeout happened.", id);
             }
-        }
 
-        if(!isCountriesEnriched) {
-            countriesFutureTask.cancel(true);
-        }
+            Future<List<Entity>> genresFuture = futureList.get(1);
+            if (genresFuture.isDone()) {
+                try {
+                    movieDetailed.setGenres(convertEntityList(genresFuture.get()));
+                } catch (ExecutionException e) {
+                    logger.warn("Cannot enrich genres for movieId: {}, because an exception happened:\n {}", id, e);
+                }
+            } else {
+                genresFuture.cancel(true);
 
-        if(!isGenresEnriched) {
-            genresFutureTask.cancel(true);
-        }
+                logger.warn("Cannot enrich genres for movieId: {}, because timeout happened.", id);
+            }
 
-        if(!isReviewesEnriched) {
-            reviewesFutureTask.cancel(true);
+            Future<List<Entity>> reviewFuture = futureList.get(2);
+            if (reviewFuture.isDone()) {
+                try {
+                    movieDetailed.setReviews(convertEntityList(reviewFuture.get()));
+                } catch (ExecutionException e) {
+                    logger.warn("Cannot enrich reviews for movieId: {}, because an exception happened:\n {}", id, e);
+                }
+            } else {
+                reviewFuture.cancel(true);
+
+                logger.warn("Cannot enrich reviews for movieId: {}, because timeout happened.", id);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
         if (requestSearchParam != null && requestSearchParam.getCurrency() != null) {
@@ -126,5 +129,15 @@ public class DefaultMovieService implements MovieService {
         }
 
         return movieDetailed;
+    }
+
+    private static <T> List<T> convertEntityList(List<Entity> entityList) {
+        List<T> tList = new ArrayList<>();
+
+        for (Entity entity : entityList) {
+            tList.add((T) entity);
+        }
+
+        return tList;
     }
 }

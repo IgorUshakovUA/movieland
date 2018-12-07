@@ -3,7 +3,7 @@ package com.ushakov.movieland.entity;
 import java.util.List;
 import java.util.Objects;
 
-public class MovieDetailed {
+public class MovieDetailed implements Entity {
     private int id;
     private String nameRussian;
     private String nameNative;
