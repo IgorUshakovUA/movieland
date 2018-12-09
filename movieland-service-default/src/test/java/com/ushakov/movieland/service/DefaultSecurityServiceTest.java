@@ -3,6 +3,7 @@ package com.ushakov.movieland.service;
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityItem;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.dao.SecurityDao;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public class DefaultSecurityServiceTest {
         // Prep
         SecurityDao securityDao = mock(SecurityDao.class);
 
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "my nick name");
+        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "my nick name", UserRole.USER, 1);
 
         Credentials credentials = new Credentials("my@email.com", "my_password");
 
@@ -46,9 +47,9 @@ public class DefaultSecurityServiceTest {
         // Prepare
         SecurityDao securityDao = mock(SecurityDao.class);
 
-        SecurityToken securityToken1 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 1");
-        SecurityToken securityToken2 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 2");
-        SecurityToken securityToken3 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 3");
+        SecurityToken securityToken1 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 1", UserRole.USER, 1);
+        SecurityToken securityToken2 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 2", UserRole.USER, 2);
+        SecurityToken securityToken3 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 3", UserRole.USER, 3);
 
 
         Credentials credentials = new Credentials("my@email.com", "my_password");

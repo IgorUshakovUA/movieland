@@ -2,6 +2,7 @@ package com.ushakov.movieland.dao.jdbc;
 
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.dao.jdbc.mapper.SecurityTokenRowMapper;
 import org.junit.Test;
@@ -21,7 +22,7 @@ public class JdbcSecurityDaoTest {
         // Prepare
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
 
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "my nick name");
+        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "my nick name", UserRole.USER, 1);
 
         Credentials credentials = new Credentials("my@email.com", "my_password");
 

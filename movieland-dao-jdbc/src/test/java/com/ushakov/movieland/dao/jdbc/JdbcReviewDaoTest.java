@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +41,28 @@ public class JdbcReviewDaoTest {
         List<Review> actualReviewList = reviewDao.getReviewsByMovieId(1);
 
         assertEquals(expectedReviewList, actualReviewList);
+    }
+
+    @Test
+    public void testAddReview() {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        User user = new User(1, "nickname");
+
+        Review expectedReview = new Review(33, user, "the text of the review");
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class), eq(Integer.class))).thenReturn(expectedReview.getId());
+        when(jdbcTemplate.update(any(String.class), any(Integer.class), any(Integer.class),any(Integer.class), any(String.class))).thenReturn(1);
+
+        // Then
+        ReviewDao reviewDao = new JdbcReviewDao(jdbcTemplate);
+
+        Review actualReview = reviewDao.addReview(1, user, expectedReview.getText());
+
+        assertEquals(expectedReview, actualReview);
+
     }
 
 }

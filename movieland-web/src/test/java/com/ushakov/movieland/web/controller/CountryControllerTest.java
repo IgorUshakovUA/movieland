@@ -2,6 +2,7 @@ package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.entity.Country;
 import com.ushakov.movieland.service.CountryService;
@@ -62,7 +63,7 @@ public class CountryControllerTest {
 
         securityService.setSecurityDao(securityDao);
 
-        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName"));
+        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName", UserRole.USER, 1));
 
         securityService.logon(new Credentials("my@email.com","password"));
 

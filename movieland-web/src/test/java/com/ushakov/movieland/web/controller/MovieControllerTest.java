@@ -65,9 +65,9 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
 
         securityService.setSecurityDao(securityDao);
 
-        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName"));
+        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName", UserRole.USER, 1));
 
-        securityService.logon(new Credentials("my@email.com","password"));
+        securityService.logon(new Credentials("my@email.com", "password"));
 
         Mockito.reset(movieService);
 

@@ -3,7 +3,9 @@ package com.ushakov.movieland.service;
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityItem;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.dao.SecurityDao;
+import com.ushakov.movieland.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -65,6 +67,28 @@ public class DefaultSecurityService implements SecurityService {
         }
 
         return securityItem.getCredentials().getEmail();
+    }
+
+    @Override
+    public UserRole getUserRole(String uuid) {
+        SecurityItem securityItem = securityItems.get(uuid);
+
+        if (securityItem == null || !securityItem.isAlive()) {
+            return null;
+        }
+
+        return securityItem.getSecurityToken().getUserRole();
+    }
+
+    @Override
+    public User getUser(String uuid) {
+        SecurityItem securityItem = securityItems.get(uuid);
+
+        if (securityItem == null || !securityItem.isAlive()) {
+            return null;
+        }
+
+        return securityItem.getSecurityToken().getUser();
     }
 
     public void setSecurityDao(SecurityDao securityDao) {

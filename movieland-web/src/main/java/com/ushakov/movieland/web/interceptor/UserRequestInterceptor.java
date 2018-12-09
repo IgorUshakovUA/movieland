@@ -1,10 +1,12 @@
 package com.ushakov.movieland.web.interceptor;
 
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.service.SecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -34,6 +36,16 @@ public class UserRequestInterceptor implements HandlerInterceptor {
 
         if (uuid == null || email == null) {
             logger.warn("The user is not logged on!");
+            HttpStatus forbidden = HttpStatus.FORBIDDEN;
+            response.setStatus(forbidden.value());
+            return false;
+        }
+
+        if (uri.equalsIgnoreCase("/v1/review")
+                && request.getMethod().equals(HttpMethod.POST.toString())
+                && securityService.getUserRole(uuid) != UserRole.USER
+                && securityService.getUserRole(uuid) != UserRole.ADMIN) {
+            logger.warn("The user does not have permissions to add review!");
             HttpStatus forbidden = HttpStatus.FORBIDDEN;
             response.setStatus(forbidden.value());
             return false;

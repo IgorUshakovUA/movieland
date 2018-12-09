@@ -3,6 +3,7 @@ package com.ushakov.movieland.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
@@ -62,7 +63,7 @@ public class SecurityControllerTest {
     @Test
     public void testLogon() throws Exception {
         // Prepare
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname");
+        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname", UserRole.USER, 1);
 
         Credentials credentials = new Credentials("my@email.com", "password");
 
@@ -101,7 +102,7 @@ public class SecurityControllerTest {
     @Test
     public void testLogout() throws Exception {
         // Prepare
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname");
+        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname", UserRole.USER, 1);
 
         // When
         when(securityService.getEmail(any(String.class))).thenReturn("my@email.com");

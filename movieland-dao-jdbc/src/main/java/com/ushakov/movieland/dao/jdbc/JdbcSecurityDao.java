@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class JdbcSecurityDao implements SecurityDao {
-    private static final String LOGON_SQL="SELECT nickName FROM app_user WHERE UPPER(email) = UPPER(?) AND password = MD5(CONCAT(?,salt))";
+    private static final String LOGON_SQL="SELECT id, nickName, userRole FROM app_user WHERE UPPER(email) = UPPER(?) AND password = MD5(CONCAT(?,salt))";
     private static final SecurityTokenRowMapper SECURITY_TOKEN_ROW_MAPPER = new SecurityTokenRowMapper();
 
     private JdbcTemplate jdbcTemplate;
