@@ -14,6 +14,7 @@ import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
+import com.ushakov.movieland.web.interceptor.UserRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ReviewControllerTest {
     private static final String USER_UUID = UUID.randomUUID().toString();
 
+    private final Credentials credentials = new Credentials("my@email.com","password");
+
+    private final SecurityToken securityToken = new SecurityToken(USER_UUID, "nickName", UserRole.USER, 1);
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -59,19 +64,27 @@ public class ReviewControllerTest {
 
     private SecurityDao securityDao = mock(SecurityDao.class);
 
+    @Autowired
+    private UserRequestInterceptor userRequestInterceptor;
+
+
     @Before
     public void before() {
+        Mockito.reset(reviewService);
+
+        Mockito.reset(securityDao);
+
         reviewController.setReviewService(reviewService);
 
         securityService.setSecurityDao(securityDao);
 
         reviewController.setSecurityService(securityService);
 
-        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName", UserRole.USER, 1));
+        userRequestInterceptor.setSecurityService(securityService);
 
-        securityService.logon(new Credentials("my@email.com","password"));
+        when(securityDao.logon(credentials)).thenReturn(securityToken);
 
-        Mockito.reset(reviewService);
+        securityService.logon(credentials);
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
@@ -89,9 +102,9 @@ public class ReviewControllerTest {
 
         // Then
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/review")
+                .header("uuid", USER_UUID)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(new ObjectMapper().writeValueAsString(anonimusReview))
-                .header("uuid", USER_UUID);
+                .content(new ObjectMapper().writeValueAsString(anonimusReview));
 
         mockMvc.perform(builder)
                 .andExpect(status().isOk())

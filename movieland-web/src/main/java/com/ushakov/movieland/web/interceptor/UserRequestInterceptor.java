@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
+@Component
 public class UserRequestInterceptor implements HandlerInterceptor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -32,7 +35,11 @@ public class UserRequestInterceptor implements HandlerInterceptor {
 
         String uuid = request.getHeader("uuid");
 
+        logger.debug("uuid: {}", uuid);
+
         String email = securityService.getEmail(uuid);
+
+        logger.debug("email: {}", email);
 
         if (uuid == null || email == null) {
             logger.warn("The user is not logged on!");
@@ -40,6 +47,8 @@ public class UserRequestInterceptor implements HandlerInterceptor {
             response.setStatus(forbidden.value());
             return false;
         }
+
+        logger.debug("User role: {}", securityService.getUserRole(uuid));
 
         if (uri.equalsIgnoreCase("/v1/review")
                 && request.getMethod().equals(HttpMethod.POST.toString())
