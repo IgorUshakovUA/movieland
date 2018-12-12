@@ -1,5 +1,6 @@
 package com.ushakov.movieland.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Movie {
@@ -10,6 +11,8 @@ public class Movie {
     private double rating;
     private double price;
     private String picturePath;
+    private List<Country> countries;
+    private List<Genre> genres;
 
     public int getId() {
         return id;
@@ -67,6 +70,22 @@ public class Movie {
         this.picturePath = picturePath;
     }
 
+    public List<Country> getCountries() {
+        return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+    }
+
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<Genre> genres) {
+        this.genres = genres;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -77,29 +96,29 @@ public class Movie {
                 ", rating=" + rating +
                 ", price=" + price +
                 ", picturePath='" + picturePath + '\'' +
+                ", countries=" + countries +
+                ", genres=" + genres +
                 '}';
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (object == null) {
-            return false;
-        }
-
-        Movie movie = (Movie) object;
-
-        if (movie == this) {
-            return true;
-        }
-
-        return this.id == movie.id && this.nameNative != null && this.nameNative.equals(movie.nameNative) &&
-                this.nameRussian != null && this.nameRussian.equals(movie.nameRussian) &&
-                this.yearOfRelease == movie.yearOfRelease && (this.rating - movie.rating) < 1e-3 &&
-                (this.price - movie.price) < 1e-3 && this.picturePath != null && this.picturePath.equals(movie.picturePath);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Movie movie = (Movie) o;
+        return id == movie.id &&
+                yearOfRelease == movie.yearOfRelease &&
+                Double.compare(movie.rating, rating) == 0 &&
+                Double.compare(movie.price, price) == 0 &&
+                Objects.equals(nameRussian, movie.nameRussian) &&
+                Objects.equals(nameNative, movie.nameNative) &&
+                Objects.equals(picturePath, movie.picturePath) &&
+                Objects.equals(countries, movie.countries) &&
+                Objects.equals(genres, movie.genres);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, rating, price, picturePath);
+        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, rating, price, picturePath, countries, genres);
     }
 }
