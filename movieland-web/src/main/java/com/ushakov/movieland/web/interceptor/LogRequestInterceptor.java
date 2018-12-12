@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
-@Component
-public class UserRequestInterceptor implements HandlerInterceptor {
+@Service
+public class LogRequestInterceptor implements HandlerInterceptor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SecurityService securityService;
@@ -42,18 +43,6 @@ public class UserRequestInterceptor implements HandlerInterceptor {
 
         if (uuid == null || email == null) {
             logger.warn("The user is not logged on!");
-            HttpStatus forbidden = HttpStatus.FORBIDDEN;
-            response.setStatus(forbidden.value());
-            return false;
-        }
-
-        logger.debug("User role: {}", securityService.getUserRole(uuid));
-
-        if (uri.equalsIgnoreCase("/v1/review")
-                && request.getMethod().equals(HttpMethod.POST.toString())
-                && securityService.getUserRole(uuid) != UserRole.USER
-                && securityService.getUserRole(uuid) != UserRole.ADMIN) {
-            logger.warn("The user does not have permissions to add review!");
             HttpStatus forbidden = HttpStatus.FORBIDDEN;
             response.setStatus(forbidden.value());
             return false;

@@ -1,9 +1,11 @@
 package com.ushakov.movieland.web.controller;
 
-import com.ushakov.movieland.entity.AnonimusReview;
+import com.ushakov.movieland.common.UserRole;
+import com.ushakov.movieland.common.ReviewRequest;
 import com.ushakov.movieland.entity.Review;
 import com.ushakov.movieland.service.ReviewService;
 import com.ushakov.movieland.service.SecurityService;
+import com.ushakov.movieland.web.interceptor.ProtectedBy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +21,11 @@ public class ReviewController {
         this.securityService = securityService;
     }
 
+    @ProtectedBy({UserRole.USER, UserRole.ADMIN})
     @PostMapping(value = "/v1/review", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Review addReview(@RequestHeader(name = "uuid") String uuid, @RequestBody AnonimusReview anonimusReview) {
-        Review review = reviewService.addReview(anonimusReview.getMovieId(), securityService.getUser(uuid), anonimusReview.getText());
+    public Review addReview(@RequestHeader(name = "uuid") String uuid, @RequestBody ReviewRequest reviewRequest) {
+        reviewRequest.setUser(securityService.getUser(uuid));
+        Review review = reviewService.addReview(reviewRequest);
 
         if (review == null) {
             throw new InternalServerErrorException("Error happened when creating new review!");

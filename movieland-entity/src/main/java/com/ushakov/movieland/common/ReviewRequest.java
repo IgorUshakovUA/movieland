@@ -1,16 +1,19 @@
-package com.ushakov.movieland.entity;
+package com.ushakov.movieland.common;
+
+import com.ushakov.movieland.entity.User;
 
 import java.util.Objects;
 
-public class AnonimusReview {
+public class ReviewRequest {
     private int movieId;
     private String text;
+    private User user;
 
-    public AnonimusReview() {
+    public ReviewRequest() {
         super();
     }
 
-    public AnonimusReview(int movieId, String text) {
+    public ReviewRequest(int movieId, String text) {
         this.movieId = movieId;
         this.text = text;
     }
@@ -31,11 +34,20 @@ public class AnonimusReview {
         this.text = text;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
-        return "AnonimusReview{" +
+        return "ReviewRequest{" +
                 "movieId=" + movieId +
                 ", text='" + text + '\'' +
+                ", user=" + user +
                 '}';
     }
 
@@ -43,13 +55,14 @@ public class AnonimusReview {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AnonimusReview that = (AnonimusReview) o;
+        ReviewRequest that = (ReviewRequest) o;
         return movieId == that.movieId &&
-                Objects.equals(text, that.text);
+                Objects.equals(text, that.text) &&
+                Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(movieId, text);
+        return Objects.hash(movieId, text, user);
     }
 }

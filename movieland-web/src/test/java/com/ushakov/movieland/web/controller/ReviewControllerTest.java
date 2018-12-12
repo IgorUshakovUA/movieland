@@ -5,7 +5,7 @@ import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityToken;
 import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.dao.SecurityDao;
-import com.ushakov.movieland.entity.AnonimusReview;
+import com.ushakov.movieland.common.ReviewRequest;
 import com.ushakov.movieland.entity.Review;
 import com.ushakov.movieland.entity.User;
 import com.ushakov.movieland.service.DefaultSecurityService;
@@ -14,7 +14,8 @@ import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
-import com.ushakov.movieland.web.interceptor.UserRequestInterceptor;
+import com.ushakov.movieland.web.interceptor.CheckAccessRequestInterceptor;
+import com.ushakov.movieland.web.interceptor.LogRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +66,10 @@ public class ReviewControllerTest {
     private SecurityDao securityDao = mock(SecurityDao.class);
 
     @Autowired
-    private UserRequestInterceptor userRequestInterceptor;
+    private LogRequestInterceptor logRequestInterceptor;
+
+    @Autowired
+    private CheckAccessRequestInterceptor checkAccessRequestInterceptor;
 
 
     @Before
@@ -80,7 +84,9 @@ public class ReviewControllerTest {
 
         reviewController.setSecurityService(securityService);
 
-        userRequestInterceptor.setSecurityService(securityService);
+        logRequestInterceptor.setSecurityService(securityService);
+
+        checkAccessRequestInterceptor.setSecurityService(securityService);
 
         when(securityDao.logon(credentials)).thenReturn(securityToken);
 
@@ -94,17 +100,17 @@ public class ReviewControllerTest {
         // Prepare
         User user = new User(1,"nickName");
         Review expectedReview = new Review(1,user,"the text of the review");
-        AnonimusReview anonimusReview = new AnonimusReview(1, expectedReview.getText());
+        ReviewRequest reviewRequest = new ReviewRequest(1, expectedReview.getText());
 
         // When
-        when(reviewService.addReview(any(Integer.class),any(User.class),any(String.class))).thenReturn(expectedReview);
+        when(reviewService.addReview(any(ReviewRequest.class))).thenReturn(expectedReview);
 
 
         // Then
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/review")
                 .header("uuid", USER_UUID)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(new ObjectMapper().writeValueAsString(anonimusReview));
+                .content(new ObjectMapper().writeValueAsString(reviewRequest));
 
         mockMvc.perform(builder)
                 .andExpect(status().isOk())
@@ -120,16 +126,16 @@ public class ReviewControllerTest {
         // Prepare
         User user = new User(1,"nickName");
         Review expectedReview = new Review(1,user,"the text of the review");
-        AnonimusReview anonimusReview = new AnonimusReview(1, expectedReview.getText());
+        ReviewRequest reviewRequest = new ReviewRequest(1, expectedReview.getText());
 
         // When
-        when(reviewService.addReview(any(Integer.class),any(User.class),any(String.class))).thenReturn(null);
+        when(reviewService.addReview(any(ReviewRequest.class))).thenReturn(null);
 
 
         // Then
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/review")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .content(new ObjectMapper().writeValueAsString(anonimusReview))
+                .content(new ObjectMapper().writeValueAsString(reviewRequest))
                 .header("uuid", USER_UUID);
 
         mockMvc.perform(builder)

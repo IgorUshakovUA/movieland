@@ -9,7 +9,7 @@ import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
-import com.ushakov.movieland.web.interceptor.UserRequestInterceptor;
+import com.ushakov.movieland.web.interceptor.LogRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,13 +47,13 @@ public class SecurityControllerTest {
     private SecurityService securityService = mock(SecurityService.class);
 
     @Autowired
-    private UserRequestInterceptor userRequestInterceptor;
+    private LogRequestInterceptor logRequestInterceptor;
 
     @Before
     public void before() {
         securityControllerr.setSecurityService(securityService);
 
-        userRequestInterceptor.setSecurityService(securityService);
+        logRequestInterceptor.setSecurityService(securityService);
 
         Mockito.reset(securityService);
 

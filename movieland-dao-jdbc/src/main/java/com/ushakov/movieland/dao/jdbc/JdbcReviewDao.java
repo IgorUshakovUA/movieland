@@ -1,9 +1,9 @@
 package com.ushakov.movieland.dao.jdbc;
 
+import com.ushakov.movieland.common.ReviewRequest;
 import com.ushakov.movieland.dao.ReviewDao;
 import com.ushakov.movieland.dao.jdbc.mapper.ReviewRowMapper;
 import com.ushakov.movieland.entity.Review;
-import com.ushakov.movieland.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,22 +39,17 @@ public class JdbcReviewDao implements ReviewDao {
     }
 
     @Override
-    public Review addReview(int movieId, User user, String text) {
+    public Review addReview(ReviewRequest reviewRequest) {
         Integer id = jdbcTemplate.queryForObject(GET_NEW_REVIEW_ID_SQL, Integer.class);
 
-        int rowsInserted = jdbcTemplate.update(ADD_REVIEW_SQL, id, movieId, user.getId(), text);
-        if (rowsInserted == 1) {
-            Review review = new Review(id, user, text);
+        jdbcTemplate.update(ADD_REVIEW_SQL, id, reviewRequest.getMovieId(), reviewRequest.getUser().getId(), reviewRequest.getText());
 
-            logger.debug("New review was added for movieId: {}", movieId);
-            logger.trace("Review: {}", review);
+        Review review = new Review(id, reviewRequest.getUser(), reviewRequest.getText());
 
-            return review;
-        } else {
-            logger.warn("Fail to add new Review for movieId: {}", movieId);
+        logger.debug("New review was added for movieId: {}", reviewRequest.getMovieId());
+        logger.trace("Review: {}", review);
 
-            return null;
-        }
+        return review;
     }
 
 
