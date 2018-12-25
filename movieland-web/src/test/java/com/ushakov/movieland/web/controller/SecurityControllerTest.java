@@ -63,7 +63,11 @@ public class SecurityControllerTest {
     @Test
     public void testLogon() throws Exception {
         // Prepare
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname", UserRole.USER, 1);
+        SecurityToken expectedSecurityTocken = new SecurityToken();
+        expectedSecurityTocken.setUuid(UUID.randomUUID().toString());
+        expectedSecurityTocken.setNickName("nickname");
+        expectedSecurityTocken.setUserRole(UserRole.USER);
+        expectedSecurityTocken.setId(1);
 
         Credentials credentials = new Credentials("my@email.com", "password");
 
@@ -102,7 +106,11 @@ public class SecurityControllerTest {
     @Test
     public void testLogout() throws Exception {
         // Prepare
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname", UserRole.USER, 1);
+        SecurityToken expectedSecurityTocken = new SecurityToken();
+        expectedSecurityTocken.setUuid(UUID.randomUUID().toString());
+        expectedSecurityTocken.setNickName("nickname");
+        expectedSecurityTocken.setUserRole(UserRole.USER);
+        expectedSecurityTocken.setId(1);
 
         // When
         when(securityService.getEmail(any(String.class))).thenReturn("my@email.com");

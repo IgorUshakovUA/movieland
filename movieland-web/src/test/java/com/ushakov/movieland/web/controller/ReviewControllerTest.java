@@ -48,7 +48,7 @@ public class ReviewControllerTest {
 
     private final Credentials credentials = new Credentials("my@email.com","password");
 
-    private final SecurityToken securityToken = new SecurityToken(USER_UUID, "nickName", UserRole.USER, 1);
+    private final SecurityToken securityToken;
 
     private MockMvc mockMvc;
 
@@ -71,6 +71,15 @@ public class ReviewControllerTest {
     @Autowired
     private CheckAccessRequestInterceptor checkAccessRequestInterceptor;
 
+    public ReviewControllerTest() {
+        super();
+
+        securityToken = new SecurityToken();
+        securityToken.setUuid(USER_UUID);
+        securityToken.setNickName("nickName");
+        securityToken.setUserRole(UserRole.USER);
+        securityToken.setId(1);
+    }
 
     @Before
     public void before() {
@@ -81,8 +90,6 @@ public class ReviewControllerTest {
         reviewController.setReviewService(reviewService);
 
         securityService.setSecurityDao(securityDao);
-
-        reviewController.setSecurityService(securityService);
 
         logRequestInterceptor.setSecurityService(securityService);
 

@@ -12,9 +12,13 @@ public class SecurityTokenRowMapper implements RowMapper<SecurityToken> {
     @Override
     public SecurityToken mapRow(ResultSet resultSet, int i) throws SQLException {
         UUID uuid = UUID.randomUUID();
-        return new SecurityToken(uuid.toString()
-                , resultSet.getString("nickName")
-                , UserRole.valueOf(resultSet.getString("userRole"))
-                , resultSet.getInt("id"));
+
+        SecurityToken securityToken = new SecurityToken();
+        securityToken.setUuid(uuid.toString());
+        securityToken.setNickName(resultSet.getString("nickName"));
+        securityToken.setUserRole(UserRole.valueOf(resultSet.getString("userRole")));
+        securityToken.setId(resultSet.getInt("id"));
+
+        return securityToken;
     }
 }

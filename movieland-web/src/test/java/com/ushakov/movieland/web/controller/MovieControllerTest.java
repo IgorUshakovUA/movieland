@@ -6,7 +6,6 @@ import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.entity.*;
 import com.ushakov.movieland.service.DefaultSecurityService;
 import com.ushakov.movieland.service.MovieService;
-import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
@@ -65,7 +64,13 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
 
         securityService.setSecurityDao(securityDao);
 
-        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName", UserRole.USER, 1));
+        SecurityToken securityToken = new SecurityToken();
+        securityToken.setUuid(USER_UUID);
+        securityToken.setNickName("nickName");
+        securityToken.setUserRole(UserRole.USER);
+        securityToken.setId(1);
+
+        when(securityDao.logon(any(Credentials.class))).thenReturn(securityToken);
 
         securityService.logon(new Credentials("my@email.com", "password"));
 

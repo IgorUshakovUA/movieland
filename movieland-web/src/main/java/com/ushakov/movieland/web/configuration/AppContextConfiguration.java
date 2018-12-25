@@ -21,6 +21,8 @@ import javax.sql.DataSource;
 import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @ComponentScan(basePackages = {"com.ushakov.movieland.service", "com.ushakov.movieland.dao"})
@@ -99,5 +101,10 @@ public class AppContextConfiguration {
         bean.setPoolSize(schedulerPoolSize);
 
         return bean;
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newCachedThreadPool();
     }
 }

@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +24,11 @@ public class CheckAccessRequestInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        String uri = request.getRequestURI();
+        if (uri.equalsIgnoreCase("/v1/login")) {
+            return true;
+        }
+
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
@@ -38,6 +45,7 @@ public class CheckAccessRequestInterceptor implements HandlerInterceptor {
 
                 for (UserRole role : userRoles) {
                     if(userRole == role) {
+                        UserHandler.setCurrentUser(securityService.getUser(uuid));
                         return true;
                     }
                 }
@@ -56,6 +64,12 @@ public class CheckAccessRequestInterceptor implements HandlerInterceptor {
             response.setStatus(forbidden.value());
             return false;
         }
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                    @Nullable ModelAndView modelAndView) {
+        UserHandler.setCurrentUser(null);
     }
 
     @Autowired

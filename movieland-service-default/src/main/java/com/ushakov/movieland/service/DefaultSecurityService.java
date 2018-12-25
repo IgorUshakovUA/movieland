@@ -44,8 +44,9 @@ public class DefaultSecurityService implements SecurityService {
     public SecurityToken logout(String uuid) {
         SecurityItem securityItem = securityItems.get(uuid);
         if (securityItem != null) {
-            securityItem.setAlive(false);
-            return securityItem.getSecurityToken();
+            SecurityToken securityToken = securityItem.getSecurityToken();
+            securityItems.remove(uuid);
+            return securityToken;
         }
 
         return null;
@@ -55,14 +56,14 @@ public class DefaultSecurityService implements SecurityService {
     public boolean isLoggedOn(String uuid) {
         SecurityItem securityItem = securityItems.get(uuid);
 
-        return securityItem != null && securityItem.isAlive();
+        return securityItem != null;
     }
 
     @Override
     public String getEmail(String uuid) {
         SecurityItem securityItem = securityItems.get(uuid);
 
-        if (securityItem == null || !securityItem.isAlive()) {
+        if (securityItem == null) {
             return null;
         }
 
@@ -73,7 +74,7 @@ public class DefaultSecurityService implements SecurityService {
     public UserRole getUserRole(String uuid) {
         SecurityItem securityItem = securityItems.get(uuid);
 
-        if (securityItem == null || !securityItem.isAlive()) {
+        if (securityItem == null) {
             return null;
         }
 
@@ -84,7 +85,7 @@ public class DefaultSecurityService implements SecurityService {
     public User getUser(String uuid) {
         SecurityItem securityItem = securityItems.get(uuid);
 
-        if (securityItem == null || !securityItem.isAlive()) {
+        if (securityItem == null) {
             return null;
         }
 
@@ -100,7 +101,7 @@ public class DefaultSecurityService implements SecurityService {
         Iterator<SecurityItem> itemIterator = securityItems.values().iterator();
         while (itemIterator.hasNext()) {
             SecurityItem current = itemIterator.next();
-            if (current.getCreated().plusHours(timeToLiveHours).isAfter(LocalDateTime.now()) || !current.isAlive()) {
+            if (current.getCreated().plusHours(timeToLiveHours).isAfter(LocalDateTime.now())) {
                 itemIterator.remove();
             }
         }

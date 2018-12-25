@@ -22,7 +22,11 @@ public class JdbcSecurityDaoTest {
         // Prepare
         JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
 
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "my nick name", UserRole.USER, 1);
+        SecurityToken expectedSecurityTocken = new SecurityToken();
+        expectedSecurityTocken.setUuid(UUID.randomUUID().toString());
+        expectedSecurityTocken.setNickName("my nick name");
+        expectedSecurityTocken.setUserRole(UserRole.USER);
+        expectedSecurityTocken.setId(1);
 
         Credentials credentials = new Credentials("my@email.com", "my_password");
 

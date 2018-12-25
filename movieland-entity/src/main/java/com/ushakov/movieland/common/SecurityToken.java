@@ -10,10 +10,19 @@ public class SecurityToken {
     private UserRole userRole;
     private int id;
 
-    public SecurityToken(String uuid, String nickName, UserRole userRole, int id) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public void setId(int id) {
         this.id = id;
     }
 

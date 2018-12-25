@@ -23,7 +23,11 @@ public class DefaultSecurityServiceTest {
         // Prep
         SecurityDao securityDao = mock(SecurityDao.class);
 
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "my nick name", UserRole.USER, 1);
+        SecurityToken expectedSecurityTocken = new SecurityToken();
+        expectedSecurityTocken.setUuid(UUID.randomUUID().toString());
+        expectedSecurityTocken.setNickName("my nick name");
+        expectedSecurityTocken.setUserRole(UserRole.USER);
+        expectedSecurityTocken.setId(1);
 
         Credentials credentials = new Credentials("my@email.com", "my_password");
 
@@ -47,10 +51,23 @@ public class DefaultSecurityServiceTest {
         // Prepare
         SecurityDao securityDao = mock(SecurityDao.class);
 
-        SecurityToken securityToken1 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 1", UserRole.USER, 1);
-        SecurityToken securityToken2 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 2", UserRole.USER, 2);
-        SecurityToken securityToken3 = new SecurityToken(UUID.randomUUID().toString(), "my nick name 3", UserRole.USER, 3);
+        SecurityToken securityToken1 = new SecurityToken();
+        securityToken1.setUuid(UUID.randomUUID().toString());
+        securityToken1.setNickName("my nick name 1");
+        securityToken1.setUserRole(UserRole.USER);
+        securityToken1.setId(1);
 
+        SecurityToken securityToken2 = new SecurityToken();
+        securityToken2.setUuid(UUID.randomUUID().toString());
+        securityToken2.setNickName("my nick name 2");
+        securityToken2.setUserRole(UserRole.USER);
+        securityToken2.setId(2);
+
+        SecurityToken securityToken3 = new SecurityToken();
+        securityToken3.setUuid(UUID.randomUUID().toString());
+        securityToken3.setNickName("my nick name 3");
+        securityToken3.setUserRole(UserRole.USER);
+        securityToken3.setId(3);
 
         Credentials credentials = new Credentials("my@email.com", "my_password");
 
@@ -64,7 +81,7 @@ public class DefaultSecurityServiceTest {
 
         Map<String, SecurityItem> securityItems = securityService.getSecurityItems();
         securityItems.get(securityToken1.getUuid()).setCreated(LocalDateTime.now().plusHours(24));
-        securityItems.get(securityToken2.getUuid()).setAlive(false);
+        securityItems.get(securityToken2.getUuid()).setCreated(LocalDateTime.now().plusHours(24));
 
         // Then
         securityService.removeExpiredSecurityTokens();
