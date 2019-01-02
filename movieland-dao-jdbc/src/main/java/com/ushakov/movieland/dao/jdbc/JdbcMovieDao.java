@@ -18,9 +18,9 @@ import java.util.List;
 
 @Repository
 public class JdbcMovieDao implements MovieDao {
-    private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id";
-    private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
-    private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
+    private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id";
+    private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
+    private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
     private static final String GET_MOVIE_BY_ID_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description, movie.genreGroupId, movie.countryGroupId FROM movie, poster WHERE movie.posterId = poster.id AND movie.id = ?";
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     private static final MovieDetailedRowMapper MOVIE_DETAILED_ROW_MAPPER = new MovieDetailedRowMapper();

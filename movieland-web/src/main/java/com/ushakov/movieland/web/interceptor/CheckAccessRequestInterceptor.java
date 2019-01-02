@@ -35,18 +35,20 @@ public class CheckAccessRequestInterceptor implements HandlerInterceptor {
             if (method.isAnnotationPresent(ProtectedBy.class)) {
                 String uuid = request.getHeader("uuid");
 
-                UserRole userRole = securityService.getUserRole(uuid);
+                if (uuid != null) {
+                    UserRole userRole = securityService.getUserRole(uuid);
 
-                logger.debug("User role: {}", userRole);
+                    logger.debug("User role: {}", userRole);
 
-                ProtectedBy protectedBy = method.getAnnotation(ProtectedBy.class);
+                    ProtectedBy protectedBy = method.getAnnotation(ProtectedBy.class);
 
-                UserRole[] userRoles = protectedBy.value();
+                    UserRole[] userRoles = protectedBy.value();
 
-                for (UserRole role : userRoles) {
-                    if(userRole == role) {
-                        UserHandler.setCurrentUser(securityService.getUser(uuid));
-                        return true;
+                    for (UserRole role : userRoles) {
+                        if (userRole == role) {
+                            UserHandler.setCurrentUser(securityService.getUser(uuid));
+                            return true;
+                        }
                     }
                 }
 
@@ -55,20 +57,13 @@ public class CheckAccessRequestInterceptor implements HandlerInterceptor {
                 response.setStatus(forbidden.value());
                 return false;
             }
-
-            return true;
         }
-        else {
-            logger.warn("Handler is not an instance of HandlerMethod!");
-            HttpStatus forbidden = HttpStatus.FORBIDDEN;
-            response.setStatus(forbidden.value());
-            return false;
-        }
+        return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                    @Nullable ModelAndView modelAndView) {
+                           @Nullable ModelAndView modelAndView) {
         UserHandler.setCurrentUser(null);
     }
 

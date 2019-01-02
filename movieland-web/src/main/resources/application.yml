@@ -27,3 +27,5 @@ security:
   cron: 0 30 * * * *
 executor:
   timeout-millis: 5000
+cors:
+  origin: http://localhost:3000

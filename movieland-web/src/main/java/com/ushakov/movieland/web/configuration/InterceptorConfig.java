@@ -1,6 +1,7 @@
 package com.ushakov.movieland.web.configuration;
 
 import com.ushakov.movieland.web.interceptor.CheckAccessRequestInterceptor;
+import com.ushakov.movieland.web.interceptor.CorsInterceptor;
 import com.ushakov.movieland.web.interceptor.LogRequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,17 +12,24 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
-
     @Bean
     LogRequestInterceptor userRequestInterceptor() {
         return new LogRequestInterceptor();
     }
 
     @Bean
-    CheckAccessRequestInterceptor checkAccessRequestInterceptor() { return new CheckAccessRequestInterceptor(); }
+    CheckAccessRequestInterceptor checkAccessRequestInterceptor() {
+        return new CheckAccessRequestInterceptor();
+    }
+
+    @Bean
+    CorsInterceptor corsInterceptor() {
+        return new CorsInterceptor();
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(corsInterceptor());
         registry.addInterceptor(userRequestInterceptor());
         registry.addInterceptor(checkAccessRequestInterceptor());
     }

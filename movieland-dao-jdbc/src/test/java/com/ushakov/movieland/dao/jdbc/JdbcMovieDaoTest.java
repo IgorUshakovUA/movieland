@@ -422,7 +422,7 @@ public class JdbcMovieDaoTest {
         expectedMovieDetailed.setNameRussian("nameRussian1");
         expectedMovieDetailed.setNameNative("nameNative1");
         expectedMovieDetailed.setYearOfRelease(1999);
-        expectedMovieDetailed.setDescritpion("description1");
+        expectedMovieDetailed.setDescription("description1");
         expectedMovieDetailed.setRating(8.5);
         expectedMovieDetailed.setPrice(99.99);
         expectedMovieDetailed.setPicturePath("picturePath1");

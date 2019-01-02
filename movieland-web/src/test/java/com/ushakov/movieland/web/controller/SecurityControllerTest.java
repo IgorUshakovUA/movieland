@@ -75,7 +75,7 @@ public class SecurityControllerTest {
         when(securityService.logon(any(Credentials.class))).thenReturn(expectedSecurityTocken);
 
         // Then
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/v1/login")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/login")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(credentials));
 
@@ -95,7 +95,7 @@ public class SecurityControllerTest {
         when(securityService.logon(any(Credentials.class))).thenReturn(null);
 
         // Then
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/v1/login")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/login")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(credentials));
 

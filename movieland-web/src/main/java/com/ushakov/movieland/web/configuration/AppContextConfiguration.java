@@ -82,8 +82,8 @@ public class AppContextConfiguration {
     }
 
     @Bean
-    public TaskExecutor taskExecutor(@Value("${my.job.executor.queue.capacity}") int executorQueueCapacity,
-                                     @Value("${my.job.executor.pool.size}") int executorPoolSize) {
+    public TaskExecutor taskExecutor(@Value("${my.job.executor.queue.capacity:10}") int executorQueueCapacity,
+                                     @Value("${my.job.executor.pool.size:5}") int executorPoolSize) {
 
         ThreadPoolTaskExecutor bean = new ThreadPoolTaskExecutor();
 
@@ -95,7 +95,7 @@ public class AppContextConfiguration {
     }
 
     @Bean
-    public TaskScheduler taskScheduler(@Value("${my.job.scheduler.pool.size}") int schedulerPoolSize) {
+    public TaskScheduler taskScheduler(@Value("${my.job.scheduler.pool.size:5}") int schedulerPoolSize) {
         ThreadPoolTaskScheduler bean = new ThreadPoolTaskScheduler();
 
         bean.setPoolSize(schedulerPoolSize);

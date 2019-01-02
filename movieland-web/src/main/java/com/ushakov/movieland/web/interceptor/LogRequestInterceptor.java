@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,18 +31,19 @@ public class LogRequestInterceptor implements HandlerInterceptor {
 
         String uuid = request.getHeader("uuid");
 
+        if (uuid == null) {
+            uuid = "NULL";
+        }
+
         logger.debug("uuid: {}", uuid);
 
         String email = securityService.getEmail(uuid);
 
-        logger.debug("email: {}", email);
-
-        if (uuid == null || email == null) {
-            logger.warn("The user is not logged on!");
-            HttpStatus forbidden = HttpStatus.FORBIDDEN;
-            response.setStatus(forbidden.value());
-            return false;
+        if(email == null) {
+            email = "READONLY";
         }
+
+        logger.debug("email: {}", email);
 
         MDC.put("user", email);
 

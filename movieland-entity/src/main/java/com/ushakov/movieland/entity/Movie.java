@@ -13,6 +13,7 @@ public class Movie {
     private String picturePath;
     private List<Country> countries;
     private List<Genre> genres;
+    private String description;
 
     public int getId() {
         return id;
@@ -86,6 +87,14 @@ public class Movie {
         this.genres = genres;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -98,6 +107,7 @@ public class Movie {
                 ", picturePath='" + picturePath + '\'' +
                 ", countries=" + countries +
                 ", genres=" + genres +
+                ", description='" + description + '\'' +
                 '}';
     }
 
@@ -114,11 +124,12 @@ public class Movie {
                 Objects.equals(nameNative, movie.nameNative) &&
                 Objects.equals(picturePath, movie.picturePath) &&
                 Objects.equals(countries, movie.countries) &&
-                Objects.equals(genres, movie.genres);
+                Objects.equals(genres, movie.genres) &&
+                Objects.equals(description, movie.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, rating, price, picturePath, countries, genres);
+        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, rating, price, picturePath, countries, genres, description);
     }
 }

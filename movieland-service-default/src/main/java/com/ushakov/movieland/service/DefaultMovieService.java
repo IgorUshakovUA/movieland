@@ -66,8 +66,8 @@ public class DefaultMovieService implements MovieService {
             for (int i = 0; i < futureList.size(); i++) {
                 Future<List<Object>> future = futureList.get(i);
                 if (future.isDone()) {
-                    Movie movie = movieList.get(i % 2);
-                    if ((i + 1) % 2 == 0) {
+                    Movie movie = movieList.get(i / 2);
+                    if ((i + 1) % 2 == 1) {
                         try {
                             movie.setCountries(convertEntityList(future.get()));
                         } catch (ExecutionException e) {
