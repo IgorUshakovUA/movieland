@@ -5,6 +5,8 @@ import com.ushakov.movieland.entity.User;
 public class UserHandler {
     private static final ThreadLocal<User> currentUser = new ThreadLocal<>();
 
+    private UserHandler() {}
+
     public static void setCurrentUser(User user) {
         currentUser.set(user);
     }

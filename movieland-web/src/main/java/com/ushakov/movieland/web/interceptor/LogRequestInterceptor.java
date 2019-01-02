@@ -25,27 +25,27 @@ public class LogRequestInterceptor implements HandlerInterceptor {
         MDC.put("requestId", UUID.randomUUID().toString());
 
         String uri = request.getRequestURI();
-        if (uri.equalsIgnoreCase("/v1/login")) {
-            return true;
+        if (!uri.equalsIgnoreCase("/v1/login")) {
+
+
+            String uuid = request.getHeader("uuid");
+
+            if (uuid == null) {
+                uuid = "NULL";
+            }
+
+            logger.debug("uuid: {}", uuid);
+
+            String email = securityService.getEmail(uuid);
+
+            if (email == null) {
+                email = "READONLY";
+            }
+
+            logger.debug("email: {}", email);
+
+            MDC.put("user", email);
         }
-
-        String uuid = request.getHeader("uuid");
-
-        if (uuid == null) {
-            uuid = "NULL";
-        }
-
-        logger.debug("uuid: {}", uuid);
-
-        String email = securityService.getEmail(uuid);
-
-        if(email == null) {
-            email = "READONLY";
-        }
-
-        logger.debug("email: {}", email);
-
-        MDC.put("user", email);
 
         return true;
     }
