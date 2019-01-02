@@ -5,6 +5,7 @@ import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.entity.MovieDetailed;
 import com.ushakov.movieland.service.MovieService;
 import com.ushakov.movieland.web.interceptor.ProtectedBy;
+import com.ushakov.movieland.web.interceptor.UserHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -53,7 +54,11 @@ public class MovieController {
     @ProtectedBy({UserRole.USER, UserRole.ADMIN})
     @RequestMapping(path = "/v1/movie/{movieId}/rating", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public double getUserRatingByMovieId(@PathVariable int movieId) {
-        return 0.0;
+        int userId = UserHandler.getCurrentUser().getId();
+
+        logger.info("Get rating by movieId: {} and userId: {}", movieId, userId);
+
+        return movieService.getUserRatingByMovieId(userId, movieId);
     }
 
     @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

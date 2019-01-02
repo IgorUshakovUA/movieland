@@ -154,6 +154,11 @@ public class DefaultMovieService implements MovieService {
         return movieDetailed;
     }
 
+    @Override
+    public double getUserRatingByMovieId(int userId, int movieId) {
+        return movieDao.getUserRatingByMovieId(userId, movieId);
+    }
+
     private static <T> List<T> convertEntityList(List<Object> entityList) {
         List<T> tList = new ArrayList<>();
 

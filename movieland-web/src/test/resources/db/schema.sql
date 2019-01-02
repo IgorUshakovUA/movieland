@@ -55,3 +55,9 @@ CREATE TABLE review (
 
 CREATE SEQUENCE seq_review START 33;
 
+CREATE TABLE userRating(
+  userId                INT NOT NULL
+, movieId               INT NOT NULL
+, rating                DOUBLE PRECISION NOT NULL
+);
+

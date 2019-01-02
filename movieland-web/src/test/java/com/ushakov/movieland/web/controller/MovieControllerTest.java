@@ -554,4 +554,21 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[2].price", equalTo(200.6)))
                 .andExpect(jsonPath("$[2].picturePath", equalTo("path3")));
     }
+
+    @Test
+    public void testGetUserRatingByMovieId() throws Exception {
+        // Prepare
+        double expectedRating = 10.0;
+        // When
+        when(movieService.getUserRatingByMovieId(any(Integer.class), any(Integer.class))).thenReturn(expectedRating);
+
+        // Then
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/1/rating")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", equalTo(expectedRating)));
+    }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -428,12 +429,29 @@ public class JdbcMovieDaoTest {
         expectedMovieDetailed.setPicturePath("picturePath1");
 
         // When
-        when(jdbcTemplate.queryForObject(any(String.class),any(MovieDetailedRowMapper.class),any(Integer.class))).thenReturn(expectedMovieDetailed);
+        when(jdbcTemplate.queryForObject(any(String.class), any(MovieDetailedRowMapper.class), any(Integer.class))).thenReturn(expectedMovieDetailed);
 
         // Then
         MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
         MovieDetailed actualMoviedetailed = movieDao.getMovieById(1);
 
         assertEquals(expectedMovieDetailed, actualMoviedetailed);
+    }
+
+    @Test
+    public void testGetUserRatingByMovieId() {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        double expectedRating = 9.9;
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class), eq(Double.class), any(Integer.class), any(Integer.class))).thenReturn(expectedRating);
+
+        // Then
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        double actualRating = movieDao.getUserRatingByMovieId(1, 2);
+
+        assertEquals(expectedRating, actualRating, 1e-3);
     }
 }
