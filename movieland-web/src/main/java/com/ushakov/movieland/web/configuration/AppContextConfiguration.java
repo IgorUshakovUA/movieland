@@ -10,11 +10,14 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
@@ -28,6 +31,7 @@ import java.util.concurrent.Executors;
 @ComponentScan(basePackages = {"com.ushakov.movieland.service", "com.ushakov.movieland.dao"})
 @EnableAsync
 @EnableScheduling
+@EnableTransactionManagement
 public class AppContextConfiguration {
 
     @Bean
@@ -55,6 +59,11 @@ public class AppContextConfiguration {
         basicDataSource.setPassword(jdbcPassword);
 
         return basicDataSource;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean

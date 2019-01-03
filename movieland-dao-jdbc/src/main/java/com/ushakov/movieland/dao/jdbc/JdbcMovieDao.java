@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcMovieDao implements MovieDao {
     private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id";
     private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";

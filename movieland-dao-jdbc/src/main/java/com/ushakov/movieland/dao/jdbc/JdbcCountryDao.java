@@ -8,10 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcCountryDao implements CountryDao {
     private static final String GET_COUNTRIES_BY_COUNTRY_GROUP_ID_SQL = "SELECT country.id, country.name FROM movie, country, countryGroup WHERE movie.id = ? AND movie.countryGroupid = countryGroup.id AND countryGroup.countryId = country.id";
     private static final String GET_ALL_COUNTRIES_SQL = "SELECT id, name FROM country";

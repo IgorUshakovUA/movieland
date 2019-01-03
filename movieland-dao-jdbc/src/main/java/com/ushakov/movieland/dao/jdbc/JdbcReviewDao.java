@@ -9,10 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcReviewDao implements ReviewDao {
     private static final String GET_REVIEWS_BY_MOVIE_ID_SQL = "SELECT review.id, review.userId, review.comment, app_user.nickName FROM review, app_user WHERE app_user.id = review.userId AND movieId = ?";
     private static final String GET_NEW_REVIEW_ID_SQL = "SELECT nextval('seq_review')";
