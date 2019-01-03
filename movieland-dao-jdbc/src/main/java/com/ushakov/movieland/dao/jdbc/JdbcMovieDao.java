@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Array;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -146,8 +147,8 @@ public class JdbcMovieDao implements MovieDao {
             result[i] = entities.get(i).getId();
         }
 
-        try {
-            return jdbcTemplate.getDataSource().getConnection().createArrayOf("INTEGER", result);
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            return connection.createArrayOf("INTEGER", result);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
