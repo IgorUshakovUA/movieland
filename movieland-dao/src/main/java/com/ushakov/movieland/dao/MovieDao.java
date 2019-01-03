@@ -11,5 +11,7 @@ public interface MovieDao {
     List<Movie> getThreeRandomMovies();
     List<Movie> getMoviesByGenre(int genreId, RequestSearchParam requestSearchParam);
     MovieDetailed getMovieById(int id);
+    int updateMovie(Movie movie);
+    int insertMovie(Movie movie);
     double getUserRatingByMovieId(int userId, int movieId);
 }

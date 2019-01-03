@@ -2,9 +2,11 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Genre {
+public class Genre implements HasGetId {
     private int id;
     private String name;
+
+    public Genre() {}
 
     public Genre(int id, String name) {
         this.id = id;
@@ -17,6 +19,14 @@ public class Genre {
 
     public String getName() {
         return name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

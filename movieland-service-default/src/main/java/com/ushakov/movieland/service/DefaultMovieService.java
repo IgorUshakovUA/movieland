@@ -155,6 +155,16 @@ public class DefaultMovieService implements MovieService {
     }
 
     @Override
+    public int updateMovie(Movie movie) {
+        return movieDao.updateMovie(movie);
+    }
+
+    @Override
+    public int insertMovie(Movie movie) {
+        return movieDao.insertMovie(movie);
+    }
+
+    @Override
     public double getUserRatingByMovieId(int userId, int movieId) {
         return movieDao.getUserRatingByMovieId(userId, movieId);
     }

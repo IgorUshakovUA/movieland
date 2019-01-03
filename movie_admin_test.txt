@@ -1,0 +1,7 @@
+curl -i -X OPTIONS http://localhost:8080/v1/login
+
+curl -i -X POST -H "Content-Type:application/json"  http://localhost:8080/v1/login -d '{"email":"dennis.craig82@example.com", "password":"coldbeer"}'
+
+curl -i -X POST -H "Content-Type:application/json" -H "uuid:98b1d213-b153-41ae-a79c-bc1959abe756"  http://localhost:8080/v1/movie -d '{"nameRussian":"new_nameRussian", "nameNative":"new_nameNative", "yearOfRelease":"1999", "description":"new_description", "price":"9.99", "picturePath":"new_picturePath","countries":[{"id":"1", "name":"США"}],"genres":[{"id":"1","name":"драма"}]}'
+
+curl -i -X PUT -H "Content-Type:application/json" -H "uuid:98b1d213-b153-41ae-a79c-bc1959abe756"  http://localhost:8080/v1/movie/52 -d '{"nameRussian":"updated_nameRussian", "nameNative":"updated_nameNative", "picturePath":"updated_picturePath","countries":[{"id":"1", "name":"США"}],"genres":[{"id":"1","name":"драма"}]}'

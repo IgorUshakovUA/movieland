@@ -10,6 +10,9 @@ import com.ushakov.movieland.entity.*;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
+import java.sql.Array;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -453,5 +456,88 @@ public class JdbcMovieDaoTest {
         double actualRating = movieDao.getUserRatingByMovieId(1, 2);
 
         assertEquals(expectedRating, actualRating, 1e-3);
+    }
+
+
+    @Test
+    public void testEntityToIntArray() throws Exception {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+        DataSource dataSource = mock(DataSource.class);
+        Connection connection = mock(Connection.class);
+        Array expectedArray = mock(Array.class);
+
+        Country country1 = new Country(1, "США");
+
+        Country country2 = new Country(3, "Великобритания");
+
+        List<Country> inputCountryList = Arrays.asList(country1, country2);
+
+        // When
+        when(jdbcTemplate.getDataSource()).thenReturn(dataSource);
+        when(dataSource.getConnection()).thenReturn(connection);
+        when(connection.createArrayOf(any(String.class), any(Integer[].class))).thenReturn(expectedArray);
+
+        // Then
+        JdbcMovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+
+        Array actualArray = movieDao.entityToIntArray(inputCountryList);
+
+        assertEquals(expectedArray, actualArray);
+    }
+
+    @Test
+    public void testInsertMovie() {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        int expectedMovieId = 1;
+
+        Movie movie = new Movie();
+        movie.setId(1);
+        movie.setNameRussian("Побег из Шоушенка");
+        movie.setNameNative("The Shawshank Redemption");
+        movie.setYearOfRelease(1994);
+        movie.setRating(8.9);
+        movie.setPrice(123.45);
+        movie.setPicturePath("path1");
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class), eq(Integer.class), any(String.class), any(String.class),
+                any(Integer.class), any(String.class), any(Double.class), any(String.class),
+                any(Array.class), any(Array.class))).thenReturn(expectedMovieId);
+
+        // Then
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        int actualMovieId = movieDao.insertMovie(movie);
+
+        assertEquals(expectedMovieId, actualMovieId);
+    }
+
+    @Test
+    public void testUpdateMovie() {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        int expectedMovieId = 1;
+
+        Movie movie = new Movie();
+        movie.setId(1);
+        movie.setNameRussian("Побег из Шоушенка");
+        movie.setNameNative("The Shawshank Redemption");
+        movie.setYearOfRelease(1994);
+        movie.setRating(8.9);
+        movie.setPrice(123.45);
+        movie.setPicturePath("path1");
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class), eq(Integer.class), any(Integer.class), any(String.class),
+                any(String.class), any(String.class), any(Array.class), any(Array.class))).thenReturn(expectedMovieId);
+
+        // Then
+        MovieDao movieDao = new JdbcMovieDao(jdbcTemplate);
+        int actualMovieId = movieDao.updateMovie(movie);
+
+        assertEquals(expectedMovieId, actualMovieId);
     }
 }

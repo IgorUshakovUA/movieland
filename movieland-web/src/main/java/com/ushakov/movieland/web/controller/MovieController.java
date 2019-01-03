@@ -78,6 +78,26 @@ public class MovieController {
         return movieService.getMoviesByGenre(genreId, getRequestSearchParam(ratingOrder, priceOrder));
     }
 
+    @ProtectedBy({UserRole.ADMIN})
+    @PutMapping(path = "/v1/movie/{movieId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public int updateMovie(@PathVariable int movieId, @RequestBody Movie movie) {
+        logger.info("Update movie with id: {}", movieId);
+
+        movie.setId(movieId);
+
+        return movieService.updateMovie(movie);
+    }
+
+    @ProtectedBy({UserRole.ADMIN})
+    @PostMapping(path = "/v1/movie", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public int insertMovie(@RequestBody Movie movie) {
+        int newMovieId = movieService.insertMovie(movie);
+
+        logger.info("Created new movie with id: {}", newMovieId);
+
+        return newMovieId;
+    }
+
     private RequestSearchParam getRequestSearchParam(SortType ratingOrder, SortType priceOrder) {
         if (ratingOrder != null && ratingOrder == SortType.ASC) {
             throw new BadRequestException("Rating order sort order can be only DESC!");
