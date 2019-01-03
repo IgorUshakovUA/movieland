@@ -14,4 +14,5 @@ public interface MovieService {
     List<Movie> getMoviesByGenre(int genreId, RequestSearchParam requestSearchParam);
     MovieDetailed getMovieById(int id);
     MovieDetailed getMovieById(int id, RequestSearchParam requestSearchParam);
+    double getUserRatingByMovieId(int userId, int movieId);
 }

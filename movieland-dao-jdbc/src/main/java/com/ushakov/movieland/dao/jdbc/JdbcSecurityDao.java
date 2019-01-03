@@ -7,10 +7,13 @@ import com.ushakov.movieland.dao.jdbc.mapper.SecurityTokenRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcSecurityDao implements SecurityDao {
-    private static final String LOGON_SQL="SELECT id, nickName, userRole FROM app_user WHERE UPPER(email) = UPPER(?) AND password = MD5(CONCAT(?,salt))";
+    private static final String LOGON_SQL = "SELECT id, nickName, userRole FROM app_user WHERE UPPER(email) = UPPER(?) AND password = MD5(CONCAT(?,salt))";
     private static final SecurityTokenRowMapper SECURITY_TOKEN_ROW_MAPPER = new SecurityTokenRowMapper();
 
     private JdbcTemplate jdbcTemplate;

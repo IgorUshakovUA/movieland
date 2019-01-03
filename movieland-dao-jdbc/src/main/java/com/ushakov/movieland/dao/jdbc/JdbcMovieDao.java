@@ -13,15 +13,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcMovieDao implements MovieDao {
     private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id";
     private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
     private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
     private static final String GET_MOVIE_BY_ID_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description, movie.genreGroupId, movie.countryGroupId FROM movie, poster WHERE movie.posterId = poster.id AND movie.id = ?";
+    private static final String GET_MOVIE_RATING_BY_USER_ID = "SELECT MAX(r.rating) rating FROM (SELECT 0.0 AS rating UNION ALL SELECT rating FROM userRating WHERE userId = ? AND movieId = ?) r";
     private static final MovieRowMapper MOVIE_ROW_MAPPER = new MovieRowMapper();
     private static final MovieDetailedRowMapper MOVIE_DETAILED_ROW_MAPPER = new MovieDetailedRowMapper();
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -95,6 +99,11 @@ public class JdbcMovieDao implements MovieDao {
         logger.debug("Movie: {}", movieDetailed);
 
         return movieDetailed;
+    }
+
+    @Override
+    public double getUserRatingByMovieId(int userId, int movieId) {
+        return jdbcTemplate.queryForObject(GET_MOVIE_RATING_BY_USER_ID, Double.class, userId, movieId);
     }
 
     static String buildSortedQuery(String baseQuery, SortField sortField, SortType sortType) {

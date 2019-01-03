@@ -5,6 +5,7 @@ import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.entity.MovieDetailed;
 import com.ushakov.movieland.service.MovieService;
 import com.ushakov.movieland.web.interceptor.ProtectedBy;
+import com.ushakov.movieland.web.interceptor.UserHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 @RestController
 public class MovieController {
@@ -22,11 +22,11 @@ public class MovieController {
     private MovieService movieService;
 
     @Autowired
-    public MovieController(MovieService movieService, ExecutorService executorService) {
+    public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
 
-    @RequestMapping(path = "/v1/movie", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/v1/movie", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getAll(@RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
         logger.info("Get all movies.");
 
@@ -37,7 +37,7 @@ public class MovieController {
         return movieService.getAll(getRequestSearchParam(ratingOrder, priceOrder));
     }
 
-    @RequestMapping(path = "/v1/movie/{movieId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/v1/movie/{movieId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public MovieDetailed getMovieById(@PathVariable int movieId, @RequestParam(name = "currency", required = false) Currency currency) {
         logger.info("Get a movie by id: {}", movieId);
 
@@ -51,19 +51,23 @@ public class MovieController {
     }
 
     @ProtectedBy({UserRole.USER, UserRole.ADMIN})
-    @RequestMapping(path = "/v1/movie/{movieId}/rating", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/v1/movie/{movieId}/rating", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public double getUserRatingByMovieId(@PathVariable int movieId) {
-        return 0.0;
+        int userId = UserHandler.getCurrentUser().getId();
+
+        logger.info("Get rating by movieId: {} and userId: {}", movieId, userId);
+
+        return movieService.getUserRatingByMovieId(userId, movieId);
     }
 
-    @RequestMapping(path = "/v1/movie/random", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/v1/movie/random", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getThreeRandomMovies() {
         logger.info("Get three random movies.");
 
         return movieService.getThreeRandomMovies();
     }
 
-    @RequestMapping(path = "/v1/movie/genre/{genreId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/v1/movie/genre/{genreId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Movie> getMoviesByGenre(@PathVariable int genreId, @RequestParam(name = "rating", required = false) SortType ratingOrder, @RequestParam(name = "price", required = false) SortType priceOrder) {
         logger.info("Get movies by genreId: {}.", genreId);
 

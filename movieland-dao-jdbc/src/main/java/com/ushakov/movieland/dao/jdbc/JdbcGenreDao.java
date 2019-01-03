@@ -8,10 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcGenreDao implements GenreDao {
     private static final String GET_ALL_SQL = "SELECT id, name FROM genre";
     private static final String GET_GENRES_BY_MOVIE_ID_SQL = "SELECT genre.id, genre.name FROM movie, genreGroup, genre WHERE movie.id = ? AND genreGroup.id = movie.genreGroupId AND genreGroup.genreId = genre.id";

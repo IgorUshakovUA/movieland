@@ -197,3 +197,5 @@ INSERT INTO countryGroup (id, countryId) VALUES (7, 7);
 INSERT INTO countryGroup (id, countryId) VALUES (7, 5);
 INSERT INTO countryGroup (id, countryId) VALUES (7, 1);
 
+INSERT INTO userRating (userId, movieId, rating) VALUES(1, 2, 9.1);
+
