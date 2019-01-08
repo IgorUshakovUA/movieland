@@ -578,12 +578,11 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         // Prepare
         int expoectedMovieId = 1;
 
-        Movie movie = new Movie();
+        NewMovie movie = new NewMovie();
         movie.setId(1);
         movie.setNameRussian("Побег из Шоушенка");
         movie.setNameNative("The Shawshank Redemption");
         movie.setYearOfRelease(1994);
-        movie.setRating(8.9);
         movie.setPrice(323.45);
         movie.setPicturePath("path1");
 
@@ -607,12 +606,11 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
         // Prepare
         int expoectedMovieId = 1;
 
-        Movie movie = new Movie();
+        NewMovie movie = new NewMovie();
         movie.setId(1);
         movie.setNameRussian("Побег из Шоушенка");
         movie.setNameNative("The Shawshank Redemption");
         movie.setYearOfRelease(1994);
-        movie.setRating(8.9);
         movie.setPrice(323.45);
         movie.setPicturePath("path1");
 

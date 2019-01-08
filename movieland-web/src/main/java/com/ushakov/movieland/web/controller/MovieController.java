@@ -3,6 +3,7 @@ package com.ushakov.movieland.web.controller;
 import com.ushakov.movieland.common.*;
 import com.ushakov.movieland.entity.Movie;
 import com.ushakov.movieland.entity.MovieDetailed;
+import com.ushakov.movieland.entity.NewMovie;
 import com.ushakov.movieland.service.MovieService;
 import com.ushakov.movieland.web.interceptor.ProtectedBy;
 import com.ushakov.movieland.web.interceptor.UserHandler;
@@ -80,7 +81,7 @@ public class MovieController {
 
     @ProtectedBy({UserRole.ADMIN})
     @PutMapping(path = "/v1/movie/{movieId}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public int updateMovie(@PathVariable int movieId, @RequestBody Movie movie) {
+    public int updateMovie(@PathVariable int movieId, @RequestBody NewMovie movie) {
         logger.info("Update movie with id: {}", movieId);
 
         movie.setId(movieId);
@@ -90,7 +91,7 @@ public class MovieController {
 
     @ProtectedBy({UserRole.ADMIN})
     @PostMapping(path = "/v1/movie", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public int insertMovie(@RequestBody Movie movie) {
+    public int insertMovie(@RequestBody NewMovie movie) {
         int newMovieId = movieService.insertMovie(movie);
 
         logger.info("Created new movie with id: {}", newMovieId);

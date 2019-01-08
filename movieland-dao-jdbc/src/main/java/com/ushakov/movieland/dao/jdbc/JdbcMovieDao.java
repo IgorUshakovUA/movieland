@@ -23,10 +23,10 @@ import java.util.List;
 @Repository
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public class JdbcMovieDao implements MovieDao {
-    private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id";
-    private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.posterId = poster.id AND RANDOM() < 0.5 LIMIT 3";
-    private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster, genreGroup WHERE movie.posterId = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
-    private static final String GET_MOVIE_BY_ID_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description, movie.genreGroupId, movie.countryGroupId FROM movie, poster WHERE movie.posterId = poster.id AND movie.id = ?";
+    private static final String GET_ALL_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.id = poster.id";
+    private static final String GET_THREE_MOVIES_BY_IDS = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster WHERE movie.id = poster.id AND RANDOM() < 0.5 LIMIT 3";
+    private static final String GET_MOVIES_BY_GENRE_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description FROM movie, poster, genreGroup WHERE movie.id = poster.id AND movie.genreGroupId = genreGroup.id AND genreGroup.genreId = ?";
+    private static final String GET_MOVIE_BY_ID_SQL = "SELECT movie.id, movie.nameRussian, movie.nameNative, movie.yearOfRelease, movie.rating, movie.price, poster.picturePath, movie.description, movie.genreGroupId, movie.countryGroupId FROM movie, poster WHERE movie.id = poster.id AND movie.id = ?";
     private static final String GET_MOVIE_RATING_BY_USER_ID = "SELECT MAX(r.rating) rating FROM (SELECT 0.0 AS rating UNION ALL SELECT rating FROM userRating WHERE userId = ? AND movieId = ?) r";
     private static final String INSERT_NEW_MOVIE_SQL = "SELECT insert_movie(?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String UPDATE_MOVIE_BY_ID_SQL = "SELECT update_movie(?, ?, ?, ?, ?, ?)";
@@ -106,17 +106,17 @@ public class JdbcMovieDao implements MovieDao {
     }
 
     @Override
-    public int updateMovie(Movie movie) {
+    public int updateMovie(NewMovie movie) {
         return jdbcTemplate.queryForObject(UPDATE_MOVIE_BY_ID_SQL, Integer.class, movie.getId(), movie.getNameRussian(),
-                movie.getNameNative(), movie.getPicturePath(), entityToIntArray(movie.getCountries()),
-                entityToIntArray(movie.getGenres()));
+                movie.getNameNative(), movie.getPicturePath(), idListToIntArray(movie.getCountries()),
+                idListToIntArray(movie.getGenres()));
     }
 
     @Override
-    public int insertMovie(Movie movie) {
+    public int insertMovie(NewMovie movie) {
         return jdbcTemplate.queryForObject(INSERT_NEW_MOVIE_SQL, Integer.class, movie.getNameRussian(), movie.getNameNative(),
                 movie.getYearOfRelease(), movie.getDescription(), movie.getPrice(), movie.getPicturePath(),
-                entityToIntArray(movie.getCountries()), entityToIntArray(movie.getGenres()));
+                idListToIntArray(movie.getCountries()), idListToIntArray(movie.getGenres()));
     }
 
     @Override
@@ -134,21 +134,13 @@ public class JdbcMovieDao implements MovieDao {
         return query.toString();
     }
 
-    <T extends HasGetId> Array entityToIntArray(List<T> entities) {
-        if (entities == null) {
+    Array idListToIntArray(List<Integer> ids) {
+        if(ids == null) {
             return null;
         }
 
-        int size = entities.size();
-
-        Integer[] result = new Integer[size];
-
-        for (int i = 0; i < size; i++) {
-            result[i] = entities.get(i).getId();
-        }
-
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
-            return connection.createArrayOf("INTEGER", result);
+            return connection.createArrayOf("INTEGER", ids.toArray());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
