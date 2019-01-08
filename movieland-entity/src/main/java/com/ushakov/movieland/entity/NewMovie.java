@@ -14,8 +14,6 @@ public class NewMovie {
     private List<Integer> genres;
     private String description;
 
-    public NewMovie() {}
-
     public int getId() {
         return id;
     }
