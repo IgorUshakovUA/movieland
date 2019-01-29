@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Country {
+public class Country implements HasGetId {
     private int id;
     private String name;
 

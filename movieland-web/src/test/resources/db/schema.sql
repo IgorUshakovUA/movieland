@@ -61,3 +61,4 @@ CREATE TABLE userRating(
 , rating                DOUBLE PRECISION NOT NULL
 );
 
+
