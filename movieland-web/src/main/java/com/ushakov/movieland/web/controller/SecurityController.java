@@ -16,8 +16,8 @@ public class SecurityController {
         this.securityService = securityService;
     }
 
-    @PutMapping(value = "/v1/login", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public SecurityToken login(Credentials credentials) {
+    @PostMapping(value = "/v1/login", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public SecurityToken login(@RequestBody Credentials credentials) {
         SecurityToken securityToken = securityService.logon(credentials);
 
         if (securityToken == null) {

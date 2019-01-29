@@ -3,12 +3,13 @@ package com.ushakov.movieland.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.AppContextConfiguration;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
-import com.ushakov.movieland.web.interceptor.UserRequestInterceptor;
+import com.ushakov.movieland.web.interceptor.LogRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,13 +47,13 @@ public class SecurityControllerTest {
     private SecurityService securityService = mock(SecurityService.class);
 
     @Autowired
-    private UserRequestInterceptor userRequestInterceptor;
+    private LogRequestInterceptor logRequestInterceptor;
 
     @Before
     public void before() {
         securityControllerr.setSecurityService(securityService);
 
-        userRequestInterceptor.setSecurityService(securityService);
+        logRequestInterceptor.setSecurityService(securityService);
 
         Mockito.reset(securityService);
 
@@ -62,7 +63,11 @@ public class SecurityControllerTest {
     @Test
     public void testLogon() throws Exception {
         // Prepare
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname");
+        SecurityToken expectedSecurityTocken = new SecurityToken();
+        expectedSecurityTocken.setUuid(UUID.randomUUID().toString());
+        expectedSecurityTocken.setNickName("nickname");
+        expectedSecurityTocken.setUserRole(UserRole.USER);
+        expectedSecurityTocken.setId(1);
 
         Credentials credentials = new Credentials("my@email.com", "password");
 
@@ -70,7 +75,7 @@ public class SecurityControllerTest {
         when(securityService.logon(any(Credentials.class))).thenReturn(expectedSecurityTocken);
 
         // Then
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/v1/login")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/login")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(credentials));
 
@@ -90,7 +95,7 @@ public class SecurityControllerTest {
         when(securityService.logon(any(Credentials.class))).thenReturn(null);
 
         // Then
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/v1/login")
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/login")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content(new ObjectMapper().writeValueAsString(credentials));
 
@@ -101,7 +106,11 @@ public class SecurityControllerTest {
     @Test
     public void testLogout() throws Exception {
         // Prepare
-        SecurityToken expectedSecurityTocken = new SecurityToken(UUID.randomUUID().toString(), "nickname");
+        SecurityToken expectedSecurityTocken = new SecurityToken();
+        expectedSecurityTocken.setUuid(UUID.randomUUID().toString());
+        expectedSecurityTocken.setNickName("nickname");
+        expectedSecurityTocken.setUserRole(UserRole.USER);
+        expectedSecurityTocken.setId(1);
 
         // When
         when(securityService.getEmail(any(String.class))).thenReturn("my@email.com");

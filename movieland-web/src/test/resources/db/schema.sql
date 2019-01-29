@@ -5,6 +5,7 @@ CREATE TABLE app_user (
 , nickName              VARCHAR(128)
 , password              VARCHAR(32)
 , salt                  VARCHAR(36)
+, userrole              VARCHAR(5)
 );
 
 CREATE TABLE poster (
@@ -51,4 +52,13 @@ CREATE TABLE review (
 , userId                INT
 , comment               VARCHAR(1024)
 );
+
+CREATE SEQUENCE seq_review START 33;
+
+CREATE TABLE userRating(
+  userId                INT NOT NULL
+, movieId               INT NOT NULL
+, rating                DOUBLE PRECISION NOT NULL
+);
+
 

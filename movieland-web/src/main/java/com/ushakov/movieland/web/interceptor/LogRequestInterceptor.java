@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,7 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
-public class UserRequestInterceptor implements HandlerInterceptor {
+@Service
+public class LogRequestInterceptor implements HandlerInterceptor {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SecurityService securityService;
@@ -24,22 +25,27 @@ public class UserRequestInterceptor implements HandlerInterceptor {
         MDC.put("requestId", UUID.randomUUID().toString());
 
         String uri = request.getRequestURI();
-        if (uri.equalsIgnoreCase("/v1/login")) {
-            return true;
+        if (!uri.equalsIgnoreCase("/v1/login")) {
+
+
+            String uuid = request.getHeader("uuid");
+
+            if (uuid == null) {
+                uuid = "NULL";
+            }
+
+            logger.debug("uuid: {}", uuid);
+
+            String email = securityService.getEmail(uuid);
+
+            if (email == null) {
+                email = "READONLY";
+            }
+
+            logger.debug("email: {}", email);
+
+            MDC.put("user", email);
         }
-
-        String uuid = request.getHeader("uuid");
-
-        String email = securityService.getEmail(uuid);
-
-        if (uuid == null || email == null) {
-            logger.warn("The user is not logged on!");
-            HttpStatus forbidden = HttpStatus.FORBIDDEN;
-            response.setStatus(forbidden.value());
-            return false;
-        }
-
-        MDC.put("user", email);
 
         return true;
     }

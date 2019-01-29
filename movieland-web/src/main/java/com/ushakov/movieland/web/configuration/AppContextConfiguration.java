@@ -10,22 +10,28 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.beans.PropertyEditor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Configuration
 @ComponentScan(basePackages = {"com.ushakov.movieland.service", "com.ushakov.movieland.dao"})
 @EnableAsync
 @EnableScheduling
+@EnableTransactionManagement
 public class AppContextConfiguration {
 
     @Bean
@@ -56,6 +62,11 @@ public class AppContextConfiguration {
     }
 
     @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
@@ -80,8 +91,8 @@ public class AppContextConfiguration {
     }
 
     @Bean
-    public TaskExecutor taskExecutor(@Value("${my.job.executor.queue.capacity}") int executorQueueCapacity,
-                                     @Value("${my.job.executor.pool.size}") int executorPoolSize) {
+    public TaskExecutor taskExecutor(@Value("${my.job.executor.queue.capacity:10}") int executorQueueCapacity,
+                                     @Value("${my.job.executor.pool.size:5}") int executorPoolSize) {
 
         ThreadPoolTaskExecutor bean = new ThreadPoolTaskExecutor();
 
@@ -93,11 +104,16 @@ public class AppContextConfiguration {
     }
 
     @Bean
-    public TaskScheduler taskScheduler(@Value("${my.job.scheduler.pool.size}") int schedulerPoolSize) {
+    public TaskScheduler taskScheduler(@Value("${my.job.scheduler.pool.size:5}") int schedulerPoolSize) {
         ThreadPoolTaskScheduler bean = new ThreadPoolTaskScheduler();
 
         bean.setPoolSize(schedulerPoolSize);
 
         return bean;
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newCachedThreadPool();
     }
 }

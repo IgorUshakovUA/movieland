@@ -2,6 +2,7 @@ package com.ushakov.movieland.web.controller;
 
 import com.ushakov.movieland.common.Credentials;
 import com.ushakov.movieland.common.SecurityToken;
+import com.ushakov.movieland.common.UserRole;
 import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.entity.Country;
 import com.ushakov.movieland.service.CountryService;
@@ -31,7 +32,6 @@ import java.util.UUID;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -62,7 +62,13 @@ public class CountryControllerTest {
 
         securityService.setSecurityDao(securityDao);
 
-        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName"));
+        SecurityToken securityToken = new SecurityToken();
+        securityToken.setUuid(USER_UUID);
+        securityToken.setNickName("nickName");
+        securityToken.setUserRole(UserRole.USER);
+        securityToken.setId(1);
+
+        when(securityDao.logon(any(Credentials.class))).thenReturn(securityToken);
 
         securityService.logon(new Credentials("my@email.com","password"));
 

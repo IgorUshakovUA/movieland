@@ -7,13 +7,11 @@ public class SecurityItem {
     private SecurityToken securityToken;
     private Credentials credentials;
     private LocalDateTime created;
-    private volatile boolean isAlive;
 
     public SecurityItem(SecurityToken securityToken, Credentials credentials) {
         this.securityToken = securityToken;
         this.credentials = credentials;
         created = LocalDateTime.now();
-        isAlive = true;
     }
 
     public SecurityToken getSecurityToken() {
@@ -36,25 +34,18 @@ public class SecurityItem {
         return securityToken.getUuid();
     }
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SecurityItem that = (SecurityItem) o;
         return Objects.equals(securityToken, that.securityToken) &&
+                Objects.equals(credentials, that.credentials) &&
                 Objects.equals(created, that.created);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(securityToken, created);
+        return Objects.hash(securityToken, credentials, created);
     }
 }

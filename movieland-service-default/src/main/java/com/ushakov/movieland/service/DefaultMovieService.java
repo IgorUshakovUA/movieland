@@ -51,7 +51,42 @@ public class DefaultMovieService implements MovieService {
 
     @Override
     public List<Movie> getThreeRandomMovies() {
-        return movieDao.getThreeRandomMovies();
+        List<Movie> movieList = movieDao.getThreeRandomMovies();
+
+        List<EnrichCallable<List<Object>>> callableList = new ArrayList<>();
+
+        for (Movie movie : movieList) {
+            callableList.add(new EnrichCallable(movie.getId(), countryService::getCountriesByMovieId));
+            callableList.add(new EnrichCallable(movie.getId(), genreService::getGenresByMovieId));
+        }
+
+        try {
+            List<Future<List<Object>>> futureList = executorService.invokeAll(callableList, executorTimeoutMillis, TimeUnit.MILLISECONDS);
+
+            for (int i = 0; i < futureList.size(); i++) {
+                Future<List<Object>> future = futureList.get(i);
+                if (future.isDone()) {
+                    Movie movie = movieList.get(i / 2);
+                    if ((i + 1) % 2 == 1) {
+                        try {
+                            movie.setCountries(convertEntityList(future.get()));
+                        } catch (ExecutionException e) {
+                            logger.warn("Cannot enrich countries for movieId: {}, because an exception happened: ", movie.getId(), e);
+                        }
+                    } else {
+                        try {
+                            movie.setGenres(convertEntityList(future.get()));
+                        } catch (ExecutionException e) {
+                            logger.warn("Cannot enrich genres for movieId: {}, because an exception happened: ", movie.getId(), e);
+                        }
+                    }
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        return movieList;
     }
 
     @Override
@@ -117,6 +152,21 @@ public class DefaultMovieService implements MovieService {
         }
 
         return movieDetailed;
+    }
+
+    @Override
+    public int updateMovie(NewMovie movie) {
+        return movieDao.updateMovie(movie);
+    }
+
+    @Override
+    public int insertMovie(NewMovie movie) {
+        return movieDao.insertMovie(movie);
+    }
+
+    @Override
+    public double getUserRatingByMovieId(int userId, int movieId) {
+        return movieDao.getUserRatingByMovieId(userId, movieId);
     }
 
     private static <T> List<T> convertEntityList(List<Object> entityList) {

@@ -1,12 +1,12 @@
 package com.ushakov.movieland.web.controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ushakov.movieland.common.*;
 import com.ushakov.movieland.dao.SecurityDao;
 import com.ushakov.movieland.entity.*;
 import com.ushakov.movieland.service.DefaultSecurityService;
 import com.ushakov.movieland.service.MovieService;
-import com.ushakov.movieland.service.SecurityService;
 import com.ushakov.movieland.web.configuration.DispatcherContextConfiguration;
 import com.ushakov.movieland.web.configuration.InterceptorConfig;
 import com.ushakov.movieland.web.configuration.TestConfiguration;
@@ -65,9 +65,15 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
 
         securityService.setSecurityDao(securityDao);
 
-        when(securityDao.logon(any(Credentials.class))).thenReturn(new SecurityToken(USER_UUID, "nickName"));
+        SecurityToken securityToken = new SecurityToken();
+        securityToken.setUuid(USER_UUID);
+        securityToken.setNickName("nickName");
+        securityToken.setUserRole(UserRole.ADMIN);
+        securityToken.setId(1);
 
-        securityService.logon(new Credentials("my@email.com","password"));
+        when(securityDao.logon(any(Credentials.class))).thenReturn(securityToken);
+
+        securityService.logon(new Credentials("my@email.com", "password"));
 
         Mockito.reset(movieService);
 
@@ -548,5 +554,78 @@ public class MovieControllerTest extends AbstractJUnit4SpringContextTests {
                 .andExpect(jsonPath("$[2].rating", equalTo(8.1)))
                 .andExpect(jsonPath("$[2].price", equalTo(200.6)))
                 .andExpect(jsonPath("$[2].picturePath", equalTo("path3")));
+    }
+
+    @Test
+    public void testGetUserRatingByMovieId() throws Exception {
+        // Prepare
+        double expectedRating = 10.0;
+        // When
+        when(movieService.getUserRatingByMovieId(any(Integer.class), any(Integer.class))).thenReturn(expectedRating);
+
+        // Then
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/v1/movie/1/rating")
+                .header("uuid", USER_UUID);
+
+        mockMvc.perform(builder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", equalTo(expectedRating)));
+    }
+
+    @Test
+    public void testInsertMovie() throws Exception {
+        // Prepare
+        int expoectedMovieId = 1;
+
+        NewMovie movie = new NewMovie();
+        movie.setId(1);
+        movie.setNameRussian("Побег из Шоушенка");
+        movie.setNameNative("The Shawshank Redemption");
+        movie.setYearOfRelease(1994);
+        movie.setPrice(323.45);
+        movie.setPicturePath("path1");
+
+        // When
+        when(movieService.insertMovie(movie)).thenReturn(expoectedMovieId);
+
+        // Then
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/v1/movie")
+                .header("uuid", USER_UUID)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(new ObjectMapper().writeValueAsString(movie));
+
+        mockMvc.perform(builder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", equalTo(expoectedMovieId)));
+    }
+
+    @Test
+    public void testUpdateMovie() throws Exception {
+        // Prepare
+        int expoectedMovieId = 1;
+
+        NewMovie movie = new NewMovie();
+        movie.setId(1);
+        movie.setNameRussian("Побег из Шоушенка");
+        movie.setNameNative("The Shawshank Redemption");
+        movie.setYearOfRelease(1994);
+        movie.setPrice(323.45);
+        movie.setPicturePath("path1");
+
+        // When
+        when(movieService.updateMovie(movie)).thenReturn(expoectedMovieId);
+
+        // Then
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.put("/v1/movie/1")
+                .header("uuid", USER_UUID)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(new ObjectMapper().writeValueAsString(movie));
+
+        mockMvc.perform(builder)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(jsonPath("$", equalTo(expoectedMovieId)));
     }
 }

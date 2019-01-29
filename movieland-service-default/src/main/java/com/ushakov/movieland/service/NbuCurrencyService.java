@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
@@ -41,12 +42,19 @@ public class NbuCurrencyService implements CurrencyService {
     @Scheduled(cron = "${nbu.rest.cron}")
     @PostConstruct
     public void reloadCurrencies() {
-        ResponseEntity<List<NbuCurrency>> responseEntity = restTemplate.exchange(restUrl, HttpMethod.GET, null, PARAMETERIZED_TYPE_REFERENCE);
-        List<NbuCurrency> currencyList = responseEntity.getBody();
-        Map<String, Double> newCurrencies = new HashMap<>();
-        for (NbuCurrency nbuCurrency : currencyList) {
-            newCurrencies.put(nbuCurrency.getName(), nbuCurrency.getRate());
+        try {
+            ResponseEntity<List<NbuCurrency>> responseEntity = restTemplate.exchange(restUrl, HttpMethod.GET, null, PARAMETERIZED_TYPE_REFERENCE);
+            List<NbuCurrency> currencyList = responseEntity.getBody();
+            Map<String, Double> newCurrencies = new HashMap<>();
+            for (NbuCurrency nbuCurrency : currencyList) {
+                newCurrencies.put(nbuCurrency.getName(), nbuCurrency.getRate());
+            }
+            currencies = newCurrencies;
         }
-        currencies = newCurrencies;
+        catch (RestClientException e) {
+            if(currencies == null) {
+                currencies = new HashMap<>();
+            }
+        }
     }
 }

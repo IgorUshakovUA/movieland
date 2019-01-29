@@ -1,5 +1,6 @@
 package com.ushakov.movieland.dao.jdbc;
 
+import com.ushakov.movieland.common.ReviewRequest;
 import com.ushakov.movieland.dao.ReviewDao;
 import com.ushakov.movieland.dao.jdbc.mapper.ReviewRowMapper;
 import com.ushakov.movieland.entity.Review;
@@ -12,6 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,6 +42,31 @@ public class JdbcReviewDaoTest {
         List<Review> actualReviewList = reviewDao.getReviewsByMovieId(1);
 
         assertEquals(expectedReviewList, actualReviewList);
+    }
+
+    @Test
+    public void testAddReview() {
+        // Prepare
+        JdbcTemplate jdbcTemplate = mock(JdbcTemplate.class);
+
+        User user = new User(1, "nickname");
+
+        Review expectedReview = new Review(33, user, "the text of the review");
+
+        ReviewRequest reviewRequest = new ReviewRequest(1, expectedReview.getText());
+        reviewRequest.setUser(user);
+
+        // When
+        when(jdbcTemplate.queryForObject(any(String.class), eq(Integer.class))).thenReturn(expectedReview.getId());
+        when(jdbcTemplate.update(any(String.class), any(Integer.class), any(Integer.class),any(Integer.class), any(String.class))).thenReturn(1);
+
+        // Then
+        ReviewDao reviewDao = new JdbcReviewDao(jdbcTemplate);
+
+        Review actualReview = reviewDao.addReview(reviewRequest);
+
+        assertEquals(expectedReview, actualReview);
+
     }
 
 }

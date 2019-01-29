@@ -2,7 +2,7 @@ package com.ushakov.movieland.entity;
 
 import java.util.Objects;
 
-public class Genre {
+public class Genre implements HasGetId {
     private int id;
     private String name;
 

@@ -3,16 +3,15 @@ package com.ushakov.movieland.entity;
 import java.util.List;
 import java.util.Objects;
 
-public class Movie {
+public class NewMovie {
     private int id;
     private String nameRussian;
     private String nameNative;
     private int yearOfRelease;
-    private double rating;
     private double price;
     private String picturePath;
-    private List<Country> countries;
-    private List<Genre> genres;
+    private List<Integer> countries;
+    private List<Integer> genres;
     private String description;
 
     public int getId() {
@@ -47,14 +46,6 @@ public class Movie {
         this.yearOfRelease = yearOfRelease;
     }
 
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
     public double getPrice() {
         return price;
     }
@@ -71,19 +62,19 @@ public class Movie {
         this.picturePath = picturePath;
     }
 
-    public List<Country> getCountries() {
+    public List<Integer> getCountries() {
         return countries;
     }
 
-    public void setCountries(List<Country> countries) {
+    public void setCountries(List<Integer> countries) {
         this.countries = countries;
     }
 
-    public List<Genre> getGenres() {
+    public List<Integer> getGenres() {
         return genres;
     }
 
-    public void setGenres(List<Genre> genres) {
+    public void setGenres(List<Integer> genres) {
         this.genres = genres;
     }
 
@@ -97,12 +88,11 @@ public class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" +
+        return "NewMovie{" +
                 "id=" + id +
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
                 ", yearOfRelease=" + yearOfRelease +
-                ", rating=" + rating +
                 ", price=" + price +
                 ", picturePath='" + picturePath + '\'' +
                 ", countries=" + countries +
@@ -115,21 +105,20 @@ public class Movie {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Movie movie = (Movie) o;
-        return id == movie.id &&
-                yearOfRelease == movie.yearOfRelease &&
-                Double.compare(movie.rating, rating) == 0 &&
-                Double.compare(movie.price, price) == 0 &&
-                Objects.equals(nameRussian, movie.nameRussian) &&
-                Objects.equals(nameNative, movie.nameNative) &&
-                Objects.equals(picturePath, movie.picturePath) &&
-                Objects.equals(countries, movie.countries) &&
-                Objects.equals(genres, movie.genres) &&
-                Objects.equals(description, movie.description);
+        NewMovie newMovie = (NewMovie) o;
+        return id == newMovie.id &&
+                yearOfRelease == newMovie.yearOfRelease &&
+                Double.compare(newMovie.price, price) == 0 &&
+                Objects.equals(nameRussian, newMovie.nameRussian) &&
+                Objects.equals(nameNative, newMovie.nameNative) &&
+                Objects.equals(picturePath, newMovie.picturePath) &&
+                Objects.equals(countries, newMovie.countries) &&
+                Objects.equals(genres, newMovie.genres) &&
+                Objects.equals(description, newMovie.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, rating, price, picturePath, countries, genres, description);
+        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, price, picturePath, countries, genres, description);
     }
 }

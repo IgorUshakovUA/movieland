@@ -8,8 +8,9 @@ public class MovieDetailed {
     private String nameRussian;
     private String nameNative;
     private int yearOfRelease;
-    private String descritpion;
+    private String description;
     private double rating;
+    private double userRating;
     private double price;
     private String picturePath;
     private List<Country> countries;
@@ -48,12 +49,12 @@ public class MovieDetailed {
         this.yearOfRelease = yearOfRelease;
     }
 
-    public String getDescritpion() {
-        return descritpion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescritpion(String descritpion) {
-        this.descritpion = descritpion;
+    public void setDescription(String descritpion) {
+        this.description = descritpion;
     }
 
     public double getRating() {
@@ -104,6 +105,14 @@ public class MovieDetailed {
         this.reviews = reviews;
     }
 
+    public double getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(double userRating) {
+        this.userRating = userRating;
+    }
+
     @Override
     public String toString() {
         return "MovieDetailed{" +
@@ -111,8 +120,9 @@ public class MovieDetailed {
                 ", nameRussian='" + nameRussian + '\'' +
                 ", nameNative='" + nameNative + '\'' +
                 ", yearOfRelease=" + yearOfRelease +
-                ", descritpion='" + descritpion + '\'' +
+                ", description='" + description + '\'' +
                 ", rating=" + rating +
+                ", userRating=" + userRating +
                 ", price=" + price +
                 ", picturePath='" + picturePath + '\'' +
                 ", countries=" + countries +
@@ -122,17 +132,18 @@ public class MovieDetailed {
     }
 
     @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-        MovieDetailed that = (MovieDetailed) object;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MovieDetailed that = (MovieDetailed) o;
         return id == that.id &&
                 yearOfRelease == that.yearOfRelease &&
                 Double.compare(that.rating, rating) == 0 &&
+                Double.compare(that.userRating, userRating) == 0 &&
                 Double.compare(that.price, price) == 0 &&
                 Objects.equals(nameRussian, that.nameRussian) &&
                 Objects.equals(nameNative, that.nameNative) &&
-                Objects.equals(descritpion, that.descritpion) &&
+                Objects.equals(description, that.description) &&
                 Objects.equals(picturePath, that.picturePath) &&
                 Objects.equals(countries, that.countries) &&
                 Objects.equals(genres, that.genres) &&
@@ -141,6 +152,6 @@ public class MovieDetailed {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, descritpion, rating, price, picturePath, countries, genres, reviews);
+        return Objects.hash(id, nameRussian, nameNative, yearOfRelease, description, rating, userRating, price, picturePath, countries, genres, reviews);
     }
 }

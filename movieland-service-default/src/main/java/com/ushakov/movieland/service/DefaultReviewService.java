@@ -1,5 +1,6 @@
 package com.ushakov.movieland.service;
 
+import com.ushakov.movieland.common.ReviewRequest;
 import com.ushakov.movieland.dao.ReviewDao;
 import com.ushakov.movieland.entity.Review;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,5 +20,10 @@ public class DefaultReviewService implements ReviewService {
     @Override
     public List<Review> getReviewsByMovieId(int movieId) {
         return reviewDao.getReviewsByMovieId(movieId);
+    }
+
+    @Override
+    public Review addReview(ReviewRequest reviewRequest) {
+        return reviewDao.addReview(reviewRequest);
     }
 }
